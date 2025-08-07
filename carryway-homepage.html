@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryWay - Processus Simplifié</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segui UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 1rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #475569;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .process-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem 2rem 2rem 2rem;
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.08);
+            border: 1px solid #f1f5f9;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease-out 0.5s forwards;
+        }
+
+        .stepper {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .stepper::before {
+            content: '';
+            position: absolute;
+            top: 24px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 4px;
+            background: #e2e8f0;
+            z-index: 1;
+            border-radius: 2px;
+        }
+
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            position: relative;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 5;
+        }
+
+        .step-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 10;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step.pending .step-circle {
+            background: #f1f5f9;
+            color: #94a3b8;
+            border: 2px solid #e2e8f0;
+        }
+
+        .step.active .step-circle {
+            background: #0f172a;
+            color: white;
+            border: 2px solid #0f172a;
+            box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.15);
+            animation: pulse 2s infinite;
+            transform: scale(1.08);
+        }
+
+        .step.completed .step-circle {
+            background: #059669;
+            color: white;
+            border: 2px solid #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+            transform: scale(1.04);
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 24px;
+            left: 12.5%;
+            right: 12.5%;
+            height: 4px;
+            background: transparent;
+            z-index: 2;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: #059669;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 2px;
+            z-index: 3;
+        }
+
+        .progress-line.step-1::before {
+            width: 25%;
+        }
+
+        .progress-line.step-2::before {
+            width: 50%;
+        }
+
+        .progress-line.step-3::before {
+            width: 75%;
+        }
+
+        .progress-line.step-4::before {
+            width: 100%;
+        }
+
+        .progress-line::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+            transform: translateX(-100%);
+            animation: none;
+            z-index: 4;
+        }
+
+        .progress-line.active::after {
+            animation: shimmer 1.5s ease-in-out;
+        }
+
+        .step-content {
+            text-align: center;
+            max-width: 200px;
+            transition: all 0.4s ease;
+        }
+
+        .step.active .step-content {
+            transform: translateY(-3px);
+        }
+
+        .step-number {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .step.active .step-number {
+            color: #0f172a;
+        }
+
+        .step.completed .step-number {
+            color: #059669;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step.active .step-title {
+            color: #0f172a;
+            font-weight: 700;
+            transform: scale(1.02);
+        }
+
+        .step.completed .step-title {
+            color: #059669;
+        }
+
+        .step-description {
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .step.active .step-description {
+            color: #475569;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 0 4px rgba(15, 23, 42, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 0 8px rgba(15, 23, 42, 0.08);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .stepper {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .step {
+                flex-direction: row;
+                text-align: left;
+                width: 100%;
+                max-width: none;
+            }
+
+            .step-circle {
+                margin-bottom: 0;
+                margin-right: 1rem;
+                width: 50px;
+                height: 50px;
+                flex-shrink: 0;
+            }
+
+            .step-connector {
+                display: none;
+            }
+
+            .step-content {
+                text-align: left;
+                max-width: none;
+                flex: 1;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .process-card {
+                padding: 2rem 1.5rem 1.5rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Processus CarryWay</h1>
+            <p>Découvrez comment notre plateforme simplifie vos livraisons en 4 étapes</p>
+        </div>
+
+        <div class="process-card">
+            <div class="stepper">
+                <div class="progress-line" id="progressLine"></div>
+
+                <div class="step pending" data-step="0">
+                    <div class="step-circle">01</div>
+                    <div class="step-content">
+                        <div class="step-number">Étape 1</div>
+                        <div class="step-title">Inscription</div>
+                        <div class="step-description">Créez votre compte professionnel</div>
+                    </div>
+                </div>
+
+                <div class="step pending" data-step="1">
+                    <div class="step-circle">02</div>
+                    <div class="step-content">
+                        <div class="step-number">Étape 2</div>
+                        <div class="step-title">Publication</div>
+                        <div class="step-description">Publiez votre demande de livraison</div>
+                    </div>
+                </div>
+
+                <div class="step pending" data-step="2">
+                    <div class="step-circle">03</div>
+                    <div class="step-content">
+                        <div class="step-number">Étape 3</div>
+                        <div class="step-title">Connexion</div>
+                        <div class="step-description">Trouvez le partenaire idéal</div>
+                    </div>
+                </div>
+
+                <div class="step pending" data-step="3">
+                    <div class="step-circle">04</div>
+                    <div class="step-content">
+                        <div class="step-number">Étape 4</div>
+                        <div class="step-title">Livraison</div>
+                        <div class="step-description">Suivez votre commande en temps réel</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class AutoProcessStepper {
+            constructor() {
+                this.currentStep = -1;
+                this.steps = document.querySelectorAll('.step');
+                this.progressLine = document.getElementById('progressLine');
+                this.stepDuration = 1000; // 1 second per step (4 steps = 4 seconds total)
+                this.hasCompleted = false;
+
+                this.init();
+            }
+
+            init() {
+                // Start the one-time animation after initial delay
+                setTimeout(() => {
+                    this.startOneTimeAnimation();
+                }, 1500);
+            }
+
+            startOneTimeAnimation() {
+                if (this.hasCompleted) return;
+
+                // Animate each step with perfect timing
+                for (let i = 0; i < this.steps.length; i++) {
+                    setTimeout(() => {
+                        this.currentStep = i;
+                        this.updateSteps();
+                        this.updateProgress();
+
+                        // Mark as completed when last step is reached
+                        if (i === this.steps.length - 1) {
+                            setTimeout(() => {
+                                this.hasCompleted = true;
+                            }, 500);
+                        }
+                    }, i * this.stepDuration);
+                }
+            }
+
+            updateSteps() {
+                this.steps.forEach((step, index) => {
+                    step.classList.remove('completed', 'active', 'pending');
+                    
+                    if (index < this.currentStep) {
+                        step.classList.add('completed');
+                        this.updateStepContent(step, 'checkmark');
+                    } else if (index === this.currentStep) {
+                        step.classList.add('active');
+                        this.updateStepContent(step, 'dot');
+                    } else {
+                        step.classList.add('pending');
+                        this.updateStepContent(step, 'number');
+                    }
+                });
+            }
+
+            updateStepContent(step, iconType) {
+                const circle = step.querySelector('.step-circle');
+                const stepNumber = step.dataset.step;
+                
+                if (iconType === 'checkmark') {
+                    circle.innerHTML = `
+                        <svg class="checkmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20,6 9,17 4,12"></polyline>
+                        </svg>
+                    `;
+                } else if (iconType === 'dot') {
+                    circle.innerHTML = '<div style="width: 10px; height: 10px; background: currentColor; border-radius: 50%;"></div>';
+                } else {
+                    circle.textContent = String(parseInt(stepNumber) + 1).padStart(2, '0');
+                }
+            }
+
+            updateProgress() {
+                // Update progress line
+                if (this.progressLine) {
+                    this.progressLine.className = 'progress-line';
+                    if (this.currentStep >= 0) {
+                        this.progressLine.classList.add(`step-${this.currentStep + 1}`);
+                        if (this.currentStep === this.steps.length - 1) {
+                            this.progressLine.classList.add('active');
+                        }
+                    }
+                }
+            }
+        }
+
+        // Initialize when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new AutoProcessStepper();
+        });
+    </script>
+</body>
+</html>

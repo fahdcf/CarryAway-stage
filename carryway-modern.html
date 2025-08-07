@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CarryWay - Plateforme de livraison collaborative</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="resources/css/carryway-modern.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Header -->
+    <header class="header header-default" id="header">
+        <div class="container">
+            <nav class="nav">
+                <!-- Logo -->
+                <a href="#" class="logo">
+                    <div class="logo-icon">
+                        <i data-lucide="truck" class="icon text-white"></i>
+                    </div>
+                    <span class="logo-text">CarryWay</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <ul class="nav-links lg:flex">
+                    <li><a href="#" class="nav-link">Accueil</a></li>
+                    <li><a href="#features" class="nav-link">Solutions</a></li>
+                    <li><a href="#how-it-works" class="nav-link">Entreprise</a></li>
+                    <li><a href="#" class="nav-link">Ressources</a></li>
+                    <li><a href="#" class="nav-link">À propos</a></li>
+                </ul>
+
+                <!-- Desktop Actions -->
+                <div class="nav-actions lg:flex">
+                    <button class="btn btn-secondary">Se connecter</button>
+                    <button class="btn btn-primary">Commencer</button>
+                </div>
+
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle lg:hidden" id="mobile-menu-toggle">
+                    <i data-lucide="menu" class="icon"></i>
+                </button>
+            </nav>
+
+            <!-- Mobile Menu -->
+            <div class="mobile-menu hidden" id="mobile-menu">
+                <div class="mobile-menu-links">
+                    <a href="#" class="mobile-menu-link">Accueil</a>
+                    <a href="#features" class="mobile-menu-link">Solutions</a>
+                    <a href="#how-it-works" class="mobile-menu-link">Entreprise</a>
+                    <a href="#" class="mobile-menu-link">Ressources</a>
+                    <a href="#" class="mobile-menu-link">À propos</a>
+                </div>
+                <div class="mobile-menu-actions">
+                    <button class="btn btn-secondary w-full text-left">Se connecter</button>
+                    <button class="btn btn-primary w-full text-center">Commencer</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="hero">
+            <div class="container">
+                <div class="hero-content lg:grid-cols-2">
+                    <div class="hero-text slide-in-left">
+                        <div class="space-y-6">
+                            <div class="hero-badge">
+                                <i data-lucide="map-pin" class="icon-sm mr-2"></i>
+                                Plateforme de livraison collaborative
+                            </div>
+
+                            <h1 class="hero-title lg:text-6xl">
+                                La livraison collaborative
+                                <br>
+                                <span class="hero-subtitle">réinventée au Maroc</span>
+                            </h1>
+
+                            <p class="hero-description">
+                                Connectez expéditeurs et transporteurs sur une plateforme sécurisée. Optimisez vos livraisons avec
+                                notre réseau de confiance vérifié.
+                            </p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="hero-actions">
+                            <!-- Tab Selector -->
+                            <div class="tab-selector">
+                                <button class="tab-button active" data-tab="sender">
+                                    Expéditeur
+                                </button>
+                                <button class="tab-button" data-tab="traveler">
+                                    Transporteur
+                                </button>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="action-buttons sm:flex-row">
+                                <button class="btn btn-primary group" id="primary-action">
+                                    <i data-lucide="package" class="icon-sm mr-2"></i>
+                                    <span id="action-text">Publier une demande</span>
+                                    <i data-lucide="arrow-right" class="icon-sm ml-2 group-hover:translate-x-0.5"></i>
+                                </button>
+
+                                <button class="btn btn-secondary">
+                                    En savoir plus
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Stats -->
+                        <div class="hero-stats lg:grid-cols-4">
+                            <div class="stat">
+                                <div class="stat-number" data-target="15000">0</div>
+                                <div class="stat-label">Utilisateurs actifs</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number" data-target="45000">0</div>
+                                <div class="stat-label">Livraisons réussies</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number" data-target="12">0</div>
+                                <div class="stat-label">Villes couvertes</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-number" data-target="98">0</div>
+                                <div class="stat-label">Satisfaction client</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual -->
+                    <div class="hero-visual slide-in-right">
+                        <div class="hero-image-container">
+                            <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=600&h=500&fit=crop&crop=center"
+                                 alt="Interface CarryWay"
+                                 class="hero-image">
+
+                            <!-- Floating status indicators -->
+                            <div class="status-indicator">
+                                <div class="status-dot"></div>
+                                <span>En ligne</span>
+                            </div>
+
+                            <div class="delivery-status">
+                                <i data-lucide="check-circle" class="icon-sm delivery-icon"></i>
+                                <span class="delivery-text">Livraison confirmée</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features" id="features">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <h2 class="section-title lg:text-4xl">
+                        Une plateforme conçue pour l'excellence
+                    </h2>
+                    <p class="section-description">
+                        Technologie avancée et processus rigoureux pour garantir sécurité, fiabilité et performance.
+                    </p>
+                </div>
+
+                <div class="features-grid md:grid-cols-2 lg:grid-cols-4">
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i data-lucide="shield" class="icon text-gray-700"></i>
+                        </div>
+                        <h3 class="feature-title">Sécurité renforcée</h3>
+                        <p class="feature-description">
+                            Vérification d'identité obligatoire avec CIN et validation en plusieurs étapes pour garantir la confiance.
+                        </p>
+                    </div>
+
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i data-lucide="award" class="icon text-gray-700"></i>
+                        </div>
+                        <h3 class="feature-title">Qualité certifiée</h3>
+                        <p class="feature-description">
+                            Système de notation transparent et processus de validation rigoureux pour maintenir l'excellence.
+                        </p>
+                    </div>
+
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i data-lucide="globe" class="icon text-gray-700"></i>
+                        </div>
+                        <h3 class="feature-title">Couverture nationale</h3>
+                        <p class="feature-description">
+                            Réseau étendu couvrant les principales villes du Maroc avec expansion continue.
+                        </p>
+                    </div>
+
+                    <div class="feature-card fade-in">
+                        <div class="feature-icon">
+                            <i data-lucide="trending-up" class="icon text-gray-700"></i>
+                        </div>
+                        <h3 class="feature-title">Performance optimisée</h3>
+                        <p class="feature-description">
+                            Algorithmes avancés pour optimiser les correspondances et réduire les délais de livraison.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works" id="how-it-works">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <h2 class="section-title lg:text-4xl">Processus simplifié</h2>
+                    <p class="section-description">
+                        Quatre étapes pour commencer à utiliser CarryWay en toute confiance.
+                    </p>
+                </div>
+
+                <div class="steps-grid lg:grid-cols-4">
+                    <div class="step fade-in">
+                        <div class="step-connector"></div>
+                        <div class="step-content">
+                            <div class="step-number">01</div>
+                            <div class="step-text">
+                                <h3 class="step-title">Inscription et vérification</h3>
+                                <p class="step-description">
+                                    Créez votre compte professionnel et complétez le processus de vérification d'identité sécurisé.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step fade-in">
+                        <div class="step-connector"></div>
+                        <div class="step-content">
+                            <div class="step-number">02</div>
+                            <div class="step-text">
+                                <h3 class="step-title">Publication d'annonce</h3>
+                                <p class="step-description">
+                                    Publiez votre demande de livraison ou votre offre de transport avec tous les détails nécessaires.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step fade-in">
+                        <div class="step-connector"></div>
+                        <div class="step-content">
+                            <div class="step-number">03</div>
+                            <div class="step-text">
+                                <h3 class="step-title">Mise en relation</h3>
+                                <p class="step-description">
+                                    Notre système intelligent vous met en relation avec les partenaires les plus adaptés à vos besoins.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step fade-in">
+                        <div class="step-content">
+                            <div class="step-number">04</div>
+                            <div class="step-text">
+                                <h3 class="step-title">Suivi et finalisation</h3>
+                                <p class="step-description">
+                                    Suivez votre livraison en temps réel et finalisez la transaction en toute sécurité.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trust Section -->
+        <section class="trust" id="trust">
+            <div class="container">
+                <div class="section-header fade-in">
+                    <h2 class="section-title lg:text-4xl">Pourquoi nous faire confiance</h2>
+                    <p class="section-description">
+                        Des garanties solides pour une expérience de livraison sans souci.
+                    </p>
+                </div>
+
+                <div class="trust-grid md:grid-cols-3">
+                    <div class="trust-item fade-in">
+                        <div class="trust-icon blue">
+                            <i data-lucide="shield-check" class="icon-lg"></i>
+                        </div>
+                        <h3 class="trust-title">Assurance complète</h3>
+                        <p class="trust-description">
+                            Tous les colis sont assurés contre les dommages et la perte pendant le transport.
+                        </p>
+                    </div>
+
+                    <div class="trust-item fade-in">
+                        <div class="trust-icon green">
+                            <i data-lucide="user-check" class="icon-lg"></i>
+                        </div>
+                        <h3 class="trust-title">Transporteurs vérifiés</h3>
+                        <p class="trust-description">
+                            Processus de vérification rigoureux incluant vérification d'identité et antécédents.
+                        </p>
+                    </div>
+
+                    <div class="trust-item fade-in">
+                        <div class="trust-icon purple">
+                            <i data-lucide="headphones" class="icon-lg"></i>
+                        </div>
+                        <h3 class="trust-title">Support 24/7</h3>
+                        <p class="trust-description">
+                            Équipe de support dédiée disponible 24h/24 pour résoudre tous vos problèmes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta" id="cta">
+            <div class="container">
+                <div class="cta-content fade-in">
+                    <h2 class="cta-title lg:text-4xl">
+                        Prêt à révolutionner vos livraisons ?
+                    </h2>
+                    <p class="cta-description">
+                        Rejoignez des milliers d'utilisateurs qui font confiance à CarryWay pour leurs besoins de livraison.
+                    </p>
+                    <div class="cta-actions sm:flex-row">
+                        <button class="btn btn-primary">
+                            <i data-lucide="rocket" class="icon-sm mr-2"></i>
+                            Commencer maintenant
+                        </button>
+                        <button class="btn btn-outline">
+                            Planifier une démo
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content lg:grid-cols-4">
+                <!-- Company Info -->
+                <div class="footer-section">
+                    <div class="footer-logo">
+                        <div class="logo-icon">
+                            <i data-lucide="truck" class="icon text-white"></i>
+                        </div>
+                        <span class="logo-text">CarryWay</span>
+                    </div>
+                    <p class="footer-description">
+                        La plateforme de livraison collaborative qui connecte expéditeurs et transporteurs au Maroc.
+                        Sécurisé, fiable et efficace.
+                    </p>
+                </div>
+
+                <!-- Solutions -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Solutions</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Pour expéditeurs</a></li>
+                        <li><a href="#" class="footer-link">Pour transporteurs</a></li>
+                        <li><a href="#" class="footer-link">Entreprises</a></li>
+                        <li><a href="#" class="footer-link">API & Intégrations</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">Centre d'aide</a></li>
+                        <li><a href="#" class="footer-link">Contact</a></li>
+                        <li><a href="#" class="footer-link">Signaler un problème</a></li>
+                        <li><a href="#" class="footer-link">Statut du service</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company -->
+                <div class="footer-section">
+                    <h4 class="footer-title">Entreprise</h4>
+                    <ul class="footer-links">
+                        <li><a href="#" class="footer-link">À propos</a></li>
+                        <li><a href="#" class="footer-link">Carrières</a></li>
+                        <li><a href="#" class="footer-link">Presse</a></li>
+                        <li><a href="#" class="footer-link">Partenaires</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom md:flex-row">
+                <p class="footer-copyright">
+                    © 2024 CarryWay. Tous droits réservés.
+                </p>
+                <div class="footer-legal">
+                    <a href="#" class="footer-legal-link">Conditions d'utilisation</a>
+                    <a href="#" class="footer-legal-link">Politique de confidentialité</a>
+                    <a href="#" class="footer-legal-link">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="resources/js/carryway-modern.js"></script>
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

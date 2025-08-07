@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good.Ortho - Comprehensive Dental Services</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #0891b2;
+        }
+
+        .logo .logo-good {
+            color: #0891b2;
+        }
+
+        .logo .logo-ortho {
+            color: #6b7280;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #4b5563;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: #1e40af;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: #0891b2;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0e7490;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #0891b2;
+            border: 2px solid #0891b2;
+        }
+
+        .btn-outline:hover {
+            background: #f0f9ff;
+        }
+
+        .btn-dark {
+            background: #374151;
+            color: white;
+            border-radius: 2rem;
+        }
+
+        .btn-dark:hover {
+            background: #1f2937;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, white 100%);
+            padding: 8rem 0 4rem;
+            margin-top: 80px;
+            position: relative;
+            overflow: visible;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 80%;
+            height: 150%;
+            background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            height: 600px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 0;
+        }
+
+        .hero-text {
+            padding-right: 3rem;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            max-width: 500px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-image {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background: transparent;
+            height: 100%;
+            margin-left: 2rem;
+        }
+
+        .hero-image img {
+            width: calc(100vw - 50vw);
+            height: 600px;
+            object-fit: cover;
+            object-position: center;
+            position: absolute;
+            right: 0;
+            z-index: 2;
+            margin-right: calc(-50vw + 50%);
+        }
+
+        .consultation-card {
+            position: absolute;
+            bottom: 10%;
+            left: -10%;
+            background: white;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            z-index: 3;
+            min-width: 180px;
+        }
+
+        .consultation-icon {
+            width: 40px;
+            height: 40px;
+            background: #0891b2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .consultation-text {
+            font-size: 0.875rem;
+            color: #374151;
+        }
+
+        .consultation-text .highlight {
+            font-weight: 600;
+            color: #0891b2;
+        }
+
+        /* Stats Section */
+        .stats {
+            padding: 4rem 0;
+            background: white;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+            color: white;
+        }
+
+        .stat-card.blue {
+            background: #1e40af;
+        }
+
+        .stat-card.teal {
+            background: #0d9488;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+        }
+
+        /* About Section */
+        .about {
+            padding: 5rem 0;
+            background: #f9fafb;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: #dbeafe;
+            color: #1e40af;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .section-text {
+            font-size: 1.125rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Unique Offerings */
+        .offerings {
+            padding: 5rem 0;
+            background: white;
+            text-align: center;
+        }
+
+        .offerings-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 5rem 0;
+            background: #f9fafb;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: box-shadow 0.3s;
+        }
+
+        .service-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            width: 3rem;
+            height: 3rem;
+            background: #1e40af;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #111827;
+        }
+
+        .service-description {
+            color: #6b7280;
+        }
+
+        /* Education Center */
+        .education {
+            padding: 5rem 0;
+            background: #0d9488;
+            color: white;
+        }
+
+        .education-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .education-card {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            border-radius: 1rem;
+        }
+
+        .education-icon {
+            width: 2rem;
+            height: 2rem;
+            margin-bottom: 1rem;
+            color: #a7f3d0;
+        }
+
+        .education-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .education-description {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-outline-white {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-outline-white:hover {
+            background: white;
+            color: #0d9488;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 0;
+            background: white;
+        }
+
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s;
+        }
+
+        .testimonial-card:hover {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .testimonial-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #e5e7eb;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .stars {
+            display: flex;
+            color: #fbbf24;
+        }
+
+        .testimonial-text {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 5rem 0;
+            background: #1e40af;
+            color: white;
+            text-align: center;
+        }
+
+        .newsletter-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 400px;
+            margin: 2rem auto;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .btn-teal {
+            background: #0d9488;
+            color: white;
+        }
+
+        .btn-teal:hover {
+            background: #0f766e;
+        }
+
+        .newsletter-disclaimer {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Footer */
+        footer {
+            background: #111827;
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #9ca3af;
+            text-decoration: none;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            background: #374151;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 2rem;
+            transition: background 0.3s;
+        }
+
+        .social-links a:hover {
+            background: #1e40af;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 2rem;
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .newsletter-form {
+                flex-direction: column;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Hide mobile menu toggle for now */
+        .mobile-menu-toggle {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                font-size: 1.5rem;
+                color: #1e40af;
+                cursor: pointer;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-good">good</span><span class="logo-ortho">.ortho</span>
+                </div>
+
+                <nav>
+                    <ul class="nav-menu">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#results">Results</a></li>
+                        <li><a href="#education">Education Center</a></li>
+                        <li><a href="#treatments">Treatments</a></li>
+                        <li><a href="#blog">Blog</a></li>
+                    </ul>
+                </nav>
+
+                <button class="mobile-menu-toggle">☰</button>
+                <a href="#contact" class="btn btn-dark">Contact Us</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>Comprehensive<br>Dental Services</h1>
+                <p>Few orthodontists in the New York City area have treated more patients with the invisalign appliance than Dr. Adam Goodman. This experience leads to efficient treatment with outstanding results.</p>
+                <div class="hero-buttons">
+                    <a href="#book" class="btn btn-primary btn-lg">Book Online</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="public/storage/images/doctor.png" alt="Dr. Adam Goodman">
+                <div class="consultation-card">
+                    <div class="consultation-icon">📞</div>
+                    <div class="consultation-text">
+                        <div>Do you want</div>
+                        <div><span class="highlight">a quick call?</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-number">20+</div>
+                    <div class="stat-label">Years of Experience</div>
+                </div>
+                <div class="stat-card teal">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Satisfied Patients</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About the Dentist -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div>
+                    <div class="badge">Meet Our Expert</div>
+                    <h2 class="section-title">Dr. Emily Harper</h2>
+                    <p class="section-text">
+                        Dr. Harper combines cutting-edge diagnostic and therapeutic technology with over 15 years of
+                        experience to provide exceptional orthodontic and general dental care.
+                    </p>
+                    <a href="#book" class="btn btn-primary">📅 Book Online</a>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Dr. Emily Harper">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Unique Offerings -->
+    <section class="offerings">
+        <div class="container">
+            <div class="offerings-content">
+                <h2 class="section-title">Our Unique Offerings</h2>
+                <p class="section-text">
+                    At BrightSmile Dental, we're committed to providing personalized care using the latest advanced techniques
+                    while ensuring maximum patient comfort. Our comprehensive approach combines state-of-the-art technology
+                    with compassionate care to deliver exceptional results.
+                </p>
+                <a href="#learn-more" class="btn btn-outline">Learn More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Overview -->
+    <section id="services" class="services">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-text">Comprehensive dental care tailored to your unique needs</p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">🛡️</div>
+                    <h3 class="service-title">Preventive Care</h3>
+                    <p class="service-description">
+                        Regular cleanings, exams, and preventive treatments to maintain optimal oral health.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">😊</div>
+                    <h3 class="service-title">Orthodontics & Braces</h3>
+                    <p class="service-description">
+                        Modern orthodontic solutions including traditional braces and clear aligners.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">⭐</div>
+                    <h3 class="service-title">Cosmetic Dentistry</h3>
+                    <p class="service-description">
+                        Enhance your smile with veneers, whitening, and other cosmetic procedures.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🕐</div>
+                    <h3 class="service-title">Emergency Services</h3>
+                    <p class="service-description">
+                        Immediate care for dental emergencies and urgent oral health issues.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education Center -->
+    <section id="education" class="education">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Education Center</h2>
+                <p class="section-text">Stay informed with our comprehensive dental education resources</p>
+            </div>
+
+            <div class="education-grid">
+                <div class="education-card">
+                    <div class="education-icon">📚</div>
+                    <h3 class="education-title">Orthodontic Treatment Explained</h3>
+                    <p class="education-description">
+                        Learn about different orthodontic options and what to expect during treatment.
+                    </p>
+                    <a href="#" class="btn btn-outline-white">Read More</a>
+                </div>
+
+                <div class="education-card">
+                    <div class="education-icon">❤️</div>
+                    <h3 class="education-title">Foods to Avoid for Healthy Teeth</h3>
+                    <p class="education-description">
+                        Discover which foods can harm your teeth and healthier alternatives.
+                    </p>
+                    <a href="#" class="btn btn-outline-white">Read More</a>
+                </div>
+
+                <div class="education-card">
+                    <div class="education-icon">🩺</div>
+                    <h3 class="education-title">Tips for Maintaining Oral Hygiene</h3>
+                    <p class="education-description">
+                        Essential daily practices to keep your teeth and gums healthy.
+                    </p>
+                    <a href="#" class="btn btn-outline-white">Read More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Patient Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">What Our Patients Say</h2>
+                <p class="section-text">Real experiences from our satisfied patients</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1494790108755-2616b612b786?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=60&q=80" alt="Sarah Johnson" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Sarah Johnson</div>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Dr. Harper and her team made my orthodontic treatment so comfortable. The results exceeded my expectations!"
+                    </p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=60&q=80" alt="Michael Chen" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Michael Chen</div>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "Professional, caring, and state-of-the-art facilities. I wouldn't trust my smile to anyone else."
+                    </p>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=60&q=80" alt="Linda Rodriguez" class="testimonial-avatar">
+                        <div>
+                            <div class="testimonial-name">Linda Rodriguez</div>
+                            <div class="stars">⭐⭐⭐⭐⭐</div>
+                        </div>
+                    </div>
+                    <p class="testimonial-text">
+                        "The entire staff is wonderful. They make every visit pleasant and my teeth have never looked better!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Subscription -->
+    <section class="newsletter">
+        <div class="container">
+            <div class="newsletter-content">
+                <h2 class="section-title">Subscribe to Our Newsletter</h2>
+                <p class="section-text">
+                    Stay updated with the latest dental health tips, news, and special offers from BrightSmile Dental.
+                </p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email address" class="newsletter-input" required>
+                    <button type="submit" class="btn btn-teal">Subscribe</button>
+                </form>
+                <p class="newsletter-disclaimer">We respect your privacy. Unsubscribe at any time.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <span>😊</span>
+                        <span>BrightSmile Dental</span>
+                    </div>
+                    <p>Providing exceptional dental care with a personal touch since 2004.</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Info</h3>
+                    <p>📍 123 Dental Street, City, ST 12345</p>
+                    <p>📞 (555) 123-4567</p>
+                    <p>✉️ info@brightsmile.com</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Follow Us</h3>
+                    <div class="social-links">
+                        <a href="#">f</a>
+                        <a href="#">t</a>
+                        <a href="#">i</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 BrightSmile Dental. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Newsletter form submission
+        document.querySelector('.newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+            if (email) {
+                alert('Thank you for subscribing! We\'ll keep you updated with the latest dental health tips.');
+                this.reset();
+            }
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            } else {
+                header.style.background = 'white';
+                header.style.backdropFilter = 'none';
+            }
+        });
+
+        // Simple mobile menu toggle (basic implementation)
+        document.querySelector('.mobile-menu-toggle').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '100%';
+                navMenu.style.left = '0';
+                navMenu.style.right = '0';
+                navMenu.style.background = 'white';
+                navMenu.style.padding = '1rem';
+                navMenu.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+            }
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections for animation
+        document.querySelectorAll('.service-card, .testimonial-card, .education-card, .stat-card').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
