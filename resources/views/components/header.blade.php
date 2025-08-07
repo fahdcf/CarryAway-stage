@@ -1,100 +1,76 @@
 {{-- Header Component --}}
-<header class="header header-default" id="header">
-    <div class="container">
-        <nav class="nav">
-            {{-- Logo --}}
-            <a href="{{ route('home') }}" class="logo">
-                <div class="logo-icon">
-                    <i data-lucide="truck" class="icon text-white"></i>
+<header class="w-full h-full flex items-center px-6">
+    <div class="flex items-center justify-between w-full">
+        <!-- Left side: Sidebar toggle and logo -->
+        <div class="flex items-center">
+            <!-- Collapse/Expand Sidebar Button -->
+            <button @click="open = !open"
+                class="bg-gray-900 text-white rounded-full p-2 mr-4 shadow-lg transition-all duration-300 focus:outline-none hover:bg-gray-800"
+                aria-label="Toggle sidebar">
+                <span x-show="open">
+                    <i data-lucide="chevron-left" class="w-5 h-5"></i>
+                </span>
+                <span x-show="!open">
+                    <i data-lucide="chevron-right" class="w-5 h-5"></i>
+                </span>
+            </button>
+            
+            <!-- Logo -->
+            <a href="{{ route('home') }}" class="flex items-center">
+                <div class="bg-gray-900 rounded-lg p-2 mr-3">
+                    <i data-lucide="truck" class="w-6 h-6 text-white"></i>
                 </div>
-                <span class="logo-text">CarryWay</span>
+                <span class="text-xl font-bold text-gray-900">CarryWay</span>
             </a>
+        </div>
 
-            {{-- Desktop Navigation --}}
-            <ul class="nav-links lg:flex">
-                <li><a href="{{ route('home') }}" class="nav-link {{ request()->routeIs('home') ? 'text-gray-900' : '' }}">Accueil</a></li>
-                <li><a href="#features" class="nav-link">Solutions</a></li>
-                <li><a href="#how-it-works" class="nav-link">Entreprise</a></li>
-                <li><a href="#" class="nav-link">Ressources</a></li>
-                <li><a href="#" class="nav-link">À propos</a></li>
-            </ul>
-
-            {{-- Desktop Actions --}}
-            <div class="nav-actions lg:flex">
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-secondary">Se connecter</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary">Commencer</a>
-                @else
-                    <div class="relative">
-                        <button class="btn btn-secondary" id="user-menu-toggle">
-                            <i data-lucide="user" class="icon-sm mr-2"></i>
-                            {{ Auth::user()->name }}
-                            <i data-lucide="chevron-down" class="icon-sm ml-2"></i>
-                        </button>
-                        
-                        {{-- User Dropdown Menu --}}
-                        <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden" id="user-menu">
-                            <div class="py-1">
-                                <a href="{{ route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    <i data-lucide="layout-dashboard" class="icon-sm mr-2 inline"></i>
-                                    Tableau de bord
-                                </a>
-                                <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    <i data-lucide="user" class="icon-sm mr-2 inline"></i>
-                                    Profil
-                                </a>
-                                <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                    <i data-lucide="settings" class="icon-sm mr-2 inline"></i>
-                                    Paramètres
-                                </a>
-                                <div class="border-t border-gray-100"></div>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                                        <i data-lucide="log-out" class="icon-sm mr-2 inline"></i>
-                                        Se déconnecter
-                                    </button>
-                                </form>
-                            </div>
+        <!-- Right side: Actions and user menu -->
+        <div class="flex items-center space-x-4">
+            <!-- Notification and Search buttons -->
+            <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="Notifications">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+            </button>
+            <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="Rechercher">
+                <i data-lucide="search" class="w-5 h-5"></i>
+            </button>
+            
+            @guest
+                <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors">Se connecter</a>
+                <a href="{{ route('register') }}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Commencer</a>
+            @else
+                <div class="relative">
+                    <button class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors" id="user-menu-toggle">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                        <span class="hidden sm:inline">{{ Auth::user()->name }}</span>
+                        <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    {{-- User Dropdown Menu --}}
+                    <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden z-50" id="user-menu">
+                        <div class="py-1">
+                            <a href="{{ route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4 mr-2 inline"></i>
+                                Tableau de bord
+                            </a>
+                            <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="user" class="w-4 h-4 mr-2 inline"></i>
+                                Profil
+                            </a>
+                            <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                <i data-lucide="settings" class="w-4 h-4 mr-2 inline"></i>
+                                Paramètres
+                            </a>
+                            <div class="border-t border-gray-100"></div>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                    <i data-lucide="log-out" class="w-4 h-4 mr-2 inline"></i>
+                                    Se déconnecter
+                                </button>
+                            </form>
                         </div>
                     </div>
-                @endguest
-            </div>
-
-            {{-- Mobile Menu Toggle --}}
-            <button class="mobile-menu-toggle lg:hidden" id="mobile-menu-toggle">
-                <i data-lucide="menu" class="icon"></i>
-            </button>
-        </nav>
-
-        {{-- Mobile Menu --}}
-        <div class="mobile-menu hidden" id="mobile-menu">
-            <div class="mobile-menu-links">
-                <a href="{{ route('home') }}" class="mobile-menu-link">Accueil</a>
-                <a href="#features" class="mobile-menu-link">Solutions</a>
-                <a href="#how-it-works" class="mobile-menu-link">Entreprise</a>
-                <a href="#" class="mobile-menu-link">Ressources</a>
-                <a href="#" class="mobile-menu-link">À propos</a>
-            </div>
-            
-            <div class="mobile-menu-actions">
-                @guest
-                    <a href="{{ route('login') }}" class="btn btn-secondary w-full text-center">Se connecter</a>
-                    <a href="{{ route('register') }}" class="btn btn-primary w-full text-center">Commencer</a>
-                @else
-                    <a href="{{ route('dashboard.index') }}" class="btn btn-secondary w-full text-center">
-                        <i data-lucide="layout-dashboard" class="icon-sm mr-2"></i>
-                        Tableau de bord
-                    </a>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-primary w-full text-center">
-                            <i data-lucide="log-out" class="icon-sm mr-2"></i>
-                            Se déconnecter
-                        </button>
-                    </form>
-                @endguest
-            </div>
+                </div>
+            @endguest
         </div>
     </div>
 </header>

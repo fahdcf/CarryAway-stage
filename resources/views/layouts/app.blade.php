@@ -73,16 +73,31 @@
     @endif
 </head>
 <body class="overflow-x-hidden">
-    <!-- Header -->
-    @include('components.header')
-
-    <!-- Main Content -->
-    <main>
-        @yield('content')
-    </main>
-
-    <!-- Footer -->
-    @include('components.footer')
+    <!-- Alpine.js for sidebar state -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <div x-data="{ open: true }" class="flex h-screen">
+        <!-- Sidebar - Full height from top to bottom -->
+        <aside class="bg-gray-900 text-white transition-all duration-300 flex-shrink-0 z-40" 
+               :class="open ? 'w-64' : 'w-16'">
+            @include('layouts.sidebar')
+        </aside>
+        
+        <!-- Main container - takes remaining width -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Header - Floating on top -->
+            <header class="bg-white shadow-sm border-b border-gray-200 h-16 flex-shrink-0 z-50">
+                @include('components.header')
+            </header>
+            
+            <!-- Main content area -->
+            <main class="flex-1 overflow-auto bg-gray-50">
+                <div class="p-6">
+                    @yield('content')
+                </div>
+                @include('components.footer')
+            </main>
+        </div>
+    </div>
 
     <!-- Scripts -->
     <script src="{{ asset('js/carryway-modern.js') }}"></script>
