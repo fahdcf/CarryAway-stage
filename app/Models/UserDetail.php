@@ -63,4 +63,29 @@ class UserDetail extends Model
     {
         return $this->id_verification_status === 'rejected';
     }
+
+    /**
+     * Get the profile picture URL with proper formatting.
+     */
+    public function getProfilePictureUrlAttribute($value)
+    {
+        if (!$value) {
+            return null;
+        }
+
+        // Ensure the URL starts with /storage/
+        if (!str_starts_with($value, '/storage/')) {
+            return '/storage/' . $value;
+        }
+
+        return $value;
+    }
+
+    /**
+     * Check if user has a profile picture.
+     */
+    public function hasProfilePicture(): bool
+    {
+        return !empty($this->profile_picture_url);
+    }
 }

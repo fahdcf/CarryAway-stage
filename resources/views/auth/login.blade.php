@@ -282,6 +282,10 @@
 
             <form method="POST" action="{{ route('login.post') }}">
                 @csrf
+                <!-- Debug: Show CSRF token for debugging -->
+                @if(config('app.debug'))
+                    <input type="hidden" name="_debug_csrf" value="{{ csrf_token() }}">
+                @endif
 
                 <!-- Email -->
                 <div class="form-group">

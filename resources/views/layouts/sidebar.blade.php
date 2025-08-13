@@ -23,8 +23,8 @@
                 <!-- Dashboard -->
                 <li>
                     <a href="{{ route('dashboard.index') }}"
-                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800"
-                       :class="open ? 'justify-start' : 'justify-center' + (request()->routeIs('dashboard.index') ? ' bg-gray-800 font-semibold' : '')">
+                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('dashboard.index') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
                         <div class="flex items-center w-full"
                              :class="open ? 'justify-start' : 'justify-center'">
                             <i data-lucide="home" class="text-white flex-shrink-0"></i>
@@ -32,11 +32,12 @@
                         </div>
                     </a>
                 </li>
+                
                 <!-- Mes annonces -->
                 <li>
                     <a href="{{ route('dashboard.my-announcements') }}"
-                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800"
-                       :class="open ? 'justify-start' : 'justify-center' + (request()->routeIs('dashboard.my-announcements') ? ' bg-gray-800 font-semibold' : '')">
+                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('dashboard.my-announcements') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
                         <div class="flex items-center w-full"
                              :class="open ? 'justify-start' : 'justify-center'">
                             <i data-lucide="list" class="text-white flex-shrink-0"></i>
@@ -44,11 +45,12 @@
                         </div>
                     </a>
                 </li>
+                
                 <!-- Toutes les annonces -->
                 <li>
                     <a href="{{ route('dashboard.all-announcements') }}"
-                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800"
-                       :class="open ? 'justify-start' : 'justify-center' + (request()->routeIs('dashboard.all-announcements') ? ' bg-gray-800 font-semibold' : '')">
+                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('dashboard.all-announcements') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
                         <div class="flex items-center w-full"
                              :class="open ? 'justify-start' : 'justify-center'">
                             <i data-lucide="layers" class="text-white flex-shrink-0"></i>
@@ -56,9 +58,22 @@
                         </div>
                     </a>
                 </li>
+                
+                <!-- Messages -->
+                <li>
+                    <a href="{{ route('messages.index') }}" class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('messages.index') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
+                        <div class="flex items-center w-full"
+                             :class="open ? 'justify-start' : 'justify-center'">
+                            <i data-lucide="message-circle" class="text-white flex-shrink-0"></i>
+                            <span x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="sidebar-label ml-3">Messages</span>
+                        </div>
+                    </a>
+                </li>
+                
                 <!-- Mes demandes -->
                 <li>
-                    <a href="#" class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800"
+                    <a href="{{ route('requests.index') }}" class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('requests.index') ? 'bg-gray-800 font-semibold' : '' }}"
                        :class="open ? 'justify-start' : 'justify-center'">
                         <div class="flex items-center w-full"
                              :class="open ? 'justify-start' : 'justify-center'">
@@ -67,15 +82,41 @@
                         </div>
                     </a>
                 </li>
+                
+                <!-- Notifications -->
+                <li>
+                    <a href="{{ route('notifications.index') }}" class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('notifications.index') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
+                        <div class="flex items-center w-full"
+                             :class="open ? 'justify-start' : 'justify-center'">
+                            <i data-lucide="bell" class="text-white flex-shrink-0"></i>
+                            <span x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="sidebar-label ml-3">Notifications</span>
+                        </div>
+                    </a>
+                </li>
+                
                 <!-- Profil -->
                 <li>
                     <a href="{{ route('profile.index') }}"
-                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800"
-                       :class="open ? 'justify-start' : 'justify-center' + (request()->routeIs('profile.index') ? ' bg-gray-800 font-semibold' : '')">
+                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('profile.index') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
                         <div class="flex items-center w-full"
                              :class="open ? 'justify-start' : 'justify-center'">
                             <i data-lucide="user" class="text-white flex-shrink-0"></i>
                             <span x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="sidebar-label ml-3">Profil</span>
+                        </div>
+                    </a>
+                </li>
+                
+                <!-- Paramètres -->
+                <li>
+                    <a href="{{ route('settings.index') }}"
+                       class="flex items-center px-3 py-3 rounded-xl transition-all hover:bg-gray-800 {{ request()->routeIs('settings.index') ? 'bg-gray-800 font-semibold' : '' }}"
+                       :class="open ? 'justify-start' : 'justify-center'">
+                        <div class="flex items-center w-full"
+                             :class="open ? 'justify-start' : 'justify-center'">
+                            <i data-lucide="settings" class="text-white flex-shrink-0"></i>
+                            <span x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform scale-95" x-transition:enter-end="opacity-100 transform scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform scale-100" x-transition:leave-end="opacity-0 transform scale-95" class="sidebar-label ml-3">Paramètres</span>
                         </div>
                     </a>
                 </li>

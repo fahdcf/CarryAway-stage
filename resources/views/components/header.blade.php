@@ -15,13 +15,7 @@
                 </span>
             </button>
             
-            <!-- Logo -->
-            <a href="{{ route('home') }}" class="flex items-center">
-                <div class="bg-gray-900 rounded-lg p-2 mr-3">
-                    <i data-lucide="truck" class="w-6 h-6 text-white"></i>
-                </div>
-                <span class="text-xl font-bold text-gray-900">CarryWay</span>
-            </a>
+           
         </div>
 
         <!-- Right side: Actions and user menu -->
@@ -55,7 +49,7 @@
                                 <i data-lucide="user" class="w-4 h-4 mr-2 inline"></i>
                                 Profil
                             </a>
-                            <a href="{{ route('settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <a href="" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="settings" class="w-4 h-4 mr-2 inline"></i>
                                 Paramètres
                             </a>

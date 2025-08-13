@@ -3,9 +3,12 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserDashboardController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\AIController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 // Page d'accueil
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -45,6 +48,10 @@ Route::middleware(['auth', 'approved.user'])->group(function () {
     Route::get('/dashboard/create-sender-announcement', [UserDashboardController::class, 'createSenderAnnouncement'])->name('dashboard.create-sender-announcement');
     Route::post('/dashboard/store-sender-announcement', [UserDashboardController::class, 'storeSenderAnnouncement'])->name('dashboard.store-sender-announcement');
 
+    // Edit announcements
+    Route::get('/dashboard/edit-sender-announcement/{id}', [UserDashboardController::class, 'editSenderAnnouncement'])->name('dashboard.edit-sender-announcement');
+    Route::post('/dashboard/update-sender-announcement/{id}', [UserDashboardController::class, 'updateSenderAnnouncement'])->name('dashboard.update-sender-announcement');
+
     // Manage announcements
     Route::post('/dashboard/toggle-announcement/{type}/{id}', [UserDashboardController::class, 'toggleAnnouncement'])->name('dashboard.toggle-announcement');
     Route::delete('/dashboard/delete-announcement/{type}/{id}', [UserDashboardController::class, 'deleteAnnouncement'])->name('dashboard.delete-announcement');
@@ -62,13 +69,38 @@ Route::middleware(['auth', 'approved.user'])->group(function () {
 //     return redirect()->route('dashboard.index');
 // })->name('dashboard')->middleware('auth');
 
-Route::get('/profile', function () {
-    return view('profile.index');
-})->name('profile')->middleware('auth');
+// Profile routes
+Route::middleware(['auth', 'approved.user'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
+    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.update-password');
+    Route::post('/profile/upload-id-documents', [ProfileController::class, 'uploadIdDocuments'])->name('profile.upload-id-documents');
+    Route::delete('/profile/delete-picture', [ProfileController::class, 'deleteProfilePicture'])->name('profile.delete-picture');
+});
 
 Route::get('/settings', function () {
     return view('settings.index');
-})->name('settings')->middleware('auth');
+})->name('settings.index')->middleware('auth');
+
+Route::get('/messages', function () {
+    return view('messages.index');
+})->name('messages.index')->middleware('auth');
+
+Route::get('/notifications', function () {
+    return view('notifications.index');
+})->name('notifications.index')->middleware('auth');
+
+Route::get('/requests', [UserDashboardController::class, 'requests'])->name('requests.index')->middleware('auth');
+
+// AI helper routes (proxy Gemini)
+Route::post('/api/ai/suggest-declared-value', [AIController::class, 'suggestDeclaredValue'])
+    ->name('ai.suggest-declared-value')
+    ->middleware('auth');
+
+// Debug page to run a detailed test of the AI value
+Route::get('/debug/ai-sender', [AIController::class, 'debugSender'])
+    ->name('debug.ai-sender')
+    ->middleware('auth');
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -84,6 +116,44 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('users.deactivate');
     Route::post('/users/{id}/reactivate', [AdminController::class, 'reactivateUser'])->name('users.reactivate');
 });
+
+// Media proxy for public disk (robust on Windows/Laragon)
+Route::get('/media/{path}', function (string $path) {
+    $normalized = ltrim(str_replace('\\', '/', $path), '/');
+
+    // Strip leading prefixes if present
+    if (str_starts_with($normalized, 'public/')) {
+        $normalized = substr($normalized, 7);
+    } elseif (str_starts_with($normalized, 'storage/')) {
+        $normalized = substr($normalized, 8);
+    }
+
+    $candidates = [];
+    $candidates[] = $normalized; // as-is in public disk
+
+    // Try common directories by basename
+    $basename = basename($normalized);
+    if ($basename && $basename !== $normalized) {
+        $candidates[] = 'announcement-pictures/' . $basename;
+        $candidates[] = 'profile_pictures/' . $basename;
+        $candidates[] = 'id_documents/' . $basename;
+    }
+
+    foreach ($candidates as $candidate) {
+        if (Storage::disk('public')->exists($candidate)) {
+            return Storage::disk('public')->response($candidate);
+        }
+    }
+
+    // Log for diagnostics
+    \Log::warning('Media not found', [
+        'requested_path' => $path,
+        'normalized' => $normalized,
+        'candidates' => $candidates,
+    ]);
+
+    abort(404);
+})->where('path', '.*')->name('media');
 
 Route::get('/shipments/create', function () {
     return view('shipments.create');
@@ -105,6 +175,21 @@ Route::get('/about', function () {
     return view('about.index');
 })->name('about');
 
+// Test route for debugging profile pictures
+Route::get('/test-profile-picture', function () {
+    $user = \App\Models\User::first();
+    if ($user && $user->userDetail) {
+        return response()->json([
+            'user_id' => $user->id,
+            'profile_picture_url' => $user->userDetail->profile_picture_url,
+            'has_profile_picture' => $user->userDetail->hasProfilePicture(),
+            'storage_path' => storage_path('app/public'),
+            'public_path' => public_path('storage'),
+        ]);
+    }
+    return response()->json(['error' => 'No user found']);
+})->middleware('auth');
+
 Route::get('/terms', function () {
     return view('legal.terms');
 })->name('terms');
@@ -114,8 +199,4 @@ Route::get('/privacy', function () {
 })->name('privacy');
 
 // Routes du profil utilisateur (à implémenter plus tard)
-Route::prefix('profile')->middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('profile.index');
-    })->name('profile.index');
-});
+// Note: Profile route is now handled by the main /profile route above

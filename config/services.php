@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'google_gemini' => [
+        'key' => env('GEMINI_API_KEY'),
+        'model' => env('GEMINI_MODEL', 'gemini-2.5-flash'), // Updated to use gemini-2.5-flash
+        'force_endpoint_url' => env('GEMINI_FORCE_ENDPOINT_URL'),
+        'disable_ssl_verify' => env('GEMINI_DISABLE_SSL_VERIFY', false), // Added for local development
+    ],
+
 ];

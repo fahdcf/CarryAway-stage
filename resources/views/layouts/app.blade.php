@@ -94,13 +94,12 @@
                 <div class="p-6">
                     @yield('content')
                 </div>
-                @include('components.footer')
             </main>
         </div>
     </div>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/carryway-modern.js') }}"></script>
+    <script src="{{ asset('js/carryway-modern.js') }}?v={{ now()->timestamp }}"></script>
 
     <!-- Initialize Lucide Icons -->
     <script>

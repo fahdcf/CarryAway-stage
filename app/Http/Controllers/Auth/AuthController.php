@@ -27,6 +27,14 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // Debug: Log the request
+        \Log::info('Login attempt', [
+            'email' => $request->email,
+            'has_csrf' => $request->has('_token'),
+            'csrf_token' => $request->input('_token'),
+            'session_id' => $request->session()->getId(),
+        ]);
+
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],

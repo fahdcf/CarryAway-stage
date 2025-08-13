@@ -21,12 +21,14 @@ class SenderAnnouncement extends Model
         'description',
         'status',
         'is_active',
+        'pictures',
     ];
 
     protected $casts = [
         'preferred_date' => 'date',
         'package_weight' => 'decimal:2',
         'is_active' => 'boolean',
+        'pictures' => 'array',
     ];
 
     /**

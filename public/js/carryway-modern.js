@@ -255,17 +255,19 @@ class CarryWayApp {
         });
     }
 
-    // Handle form submissions (if any)
+    // Handle form submissions (AJAX-only, opt-in)
     setupFormHandling() {
-        const forms = document.querySelectorAll('form');
-        
+        // Only intercept forms explicitly marked for AJAX
+        const forms = document.querySelectorAll('form[data-ajax="true"]');
+
         forms.forEach(form => {
             form.addEventListener('submit', (e) => {
+                // Intercept only these forms
                 e.preventDefault();
-                
+
                 // Add your form handling logic here
-                console.log('Form submitted:', form);
-                
+                console.log('AJAX form submitted:', form);
+
                 // Show success message or handle errors
                 this.showNotification('Formulaire envoyé avec succès!', 'success');
             });
@@ -320,8 +322,9 @@ class CarryWayApp {
 
     // Initialize all features
     initializeAll() {
-        this.setupSmoothScrolling();
-        this.setupButtonLoading();
+        // Keep minimal for performance on dashboard pages
+        // this.setupSmoothScrolling();
+        // this.setupButtonLoading();
         this.setupFormHandling();
     }
 }
