@@ -49,6 +49,8 @@ Route::middleware(['auth', 'approved.user'])->group(function () {
     Route::post('/dashboard/store-sender-announcement', [UserDashboardController::class, 'storeSenderAnnouncement'])->name('dashboard.store-sender-announcement');
 
     // Edit announcements
+    Route::get('/dashboard/edit-traveler-announcement/{id}', [UserDashboardController::class, 'editTravelerAnnouncement'])->name('dashboard.edit-traveler-announcement');
+    Route::post('/dashboard/update-traveler-announcement/{id}', [UserDashboardController::class, 'updateTravelerAnnouncement'])->name('dashboard.update-traveler-announcement');
     Route::get('/dashboard/edit-sender-announcement/{id}', [UserDashboardController::class, 'editSenderAnnouncement'])->name('dashboard.edit-sender-announcement');
     Route::post('/dashboard/update-sender-announcement/{id}', [UserDashboardController::class, 'updateSenderAnnouncement'])->name('dashboard.update-sender-announcement');
 
@@ -95,6 +97,9 @@ Route::get('/requests', [UserDashboardController::class, 'requests'])->name('req
 // AI helper routes (proxy Gemini)
 Route::post('/api/ai/suggest-declared-value', [AIController::class, 'suggestDeclaredValue'])
     ->name('ai.suggest-declared-value')
+    ->middleware('auth');
+Route::post('/api/ai/suggest-price-per-kg', [AIController::class, 'suggestPricePerKg'])
+    ->name('ai.suggest-price-per-kg')
     ->middleware('auth');
 
 // Debug page to run a detailed test of the AI value

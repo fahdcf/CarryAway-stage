@@ -71,10 +71,78 @@ class UserDashboardController extends Controller
             'departure_city' => 'required|string|max:255',
             'arrival_city' => 'required|string|max:255',
             'departure_date' => 'required|date|after:today',
+            'departure_time' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Skip validation if value is null, empty string, or just whitespace
+                    if (!$value || $value === '' || trim($value) === '') {
+                        return;
+                    }
+                    
+                    // Handle different time formats (H:i, H:i:s, etc.)
+                    $timeValue = trim($value);
+                    
+                    // Check if it's a valid time format (H:i or H:i:s)
+                    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/', $timeValue)) {
+                        $fail('L\'heure de départ doit être au format HH:MM.');
+                        return;
+                    }
+                    
+                    $arrivalDate = $request->input('estimated_arrival_date');
+                    $departureDate = $request->input('departure_date');
+                    
+                    // If arrival date is same as departure date, departure time is required
+                    if ($arrivalDate && $departureDate && $arrivalDate === $departureDate && !$value) {
+                        $fail('L\'heure de départ est requise lorsque l\'arrivée est prévue le même jour.');
+                    }
+                }
+            ],
             'available_kg' => 'required|numeric|min:0.1|max:100',
             'description' => 'nullable|string|max:1000',
             'transport_mode' => 'nullable|string|max:255',
-            'estimated_arrival_date' => 'nullable|date|after:departure_date',
+            'estimated_arrival_date' => 'nullable|date|after_or_equal:departure_date',
+            'estimated_arrival_time' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Skip validation if value is null, empty string, or just whitespace
+                    if (!$value || $value === '' || trim($value) === '') {
+                        return;
+                    }
+                    
+                    // Handle different time formats (H:i, H:i:s, etc.)
+                    $timeValue = trim($value);
+                    
+                    // Check if it's a valid time format (H:i or H:i:s)
+                    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/', $timeValue)) {
+                        $fail('L\'heure d\'arrivée doit être au format HH:MM.');
+                        return;
+                    }
+                    
+                    $arrivalDate = $request->input('estimated_arrival_date');
+                    $departureDate = $request->input('departure_date');
+                    $departureTime = $request->input('departure_time');
+                    
+                    // If arrival date is same as departure date, both times are required
+                    if ($arrivalDate && $departureDate && $arrivalDate === $departureDate) {
+                        if (!$departureTime) {
+                            $fail('L\'heure de départ est requise lorsque l\'arrivée est prévue le même jour.');
+                        }
+                        if (!$value) {
+                            $fail('L\'heure d\'arrivée est requise lorsque l\'arrivée est prévue le même jour que le départ.');
+                        }
+                        
+                        // If both times provided, arrival must be after departure
+                        if ($departureTime && $value) {
+                            $depDateTime = new \DateTime($departureDate . ' ' . $departureTime);
+                            $arrDateTime = new \DateTime($arrivalDate . ' ' . $value);
+                            
+                            if ($arrDateTime <= $depDateTime) {
+                                $fail('L\'heure d\'arrivée doit être postérieure à l\'heure de départ pour une livraison le même jour.');
+                            }
+                        }
+                    }
+                }
+            ],
             'price_per_kg' => 'nullable|numeric|min:0|max:1000',
             'extra_notes' => 'nullable|string|max:1000',
         ]);
@@ -97,7 +165,9 @@ class UserDashboardController extends Controller
         TravelerAnnouncementDetail::create([
             'announcement_id' => $announcement->id,
             'transport_mode' => $request->transport_mode,
+            'departure_time' => $request->departure_time,
             'estimated_arrival_date' => $request->estimated_arrival_date,
+            'estimated_arrival_time' => $request->estimated_arrival_time,
             'price_per_kg' => $request->price_per_kg,
             'extra_notes' => $request->extra_notes,
         ]);
@@ -112,6 +182,130 @@ class UserDashboardController extends Controller
     public function createSenderAnnouncement(): View
     {
         return view('dashboard.create-sender-announcement');
+    }
+
+    /**
+     * Show edit traveler announcement form.
+     */
+    public function editTravelerAnnouncement($id): View
+    {
+        $user = Auth::user();
+        $announcement = TravelerAnnouncement::where('user_id', $user->id)
+            ->with('details')
+            ->findOrFail($id);
+
+        return view('dashboard.create-traveler-announcement', compact('announcement'));
+    }
+
+    /**
+     * Update an existing traveler announcement.
+     */
+    public function updateTravelerAnnouncement(Request $request, $id)
+    {
+        $user = Auth::user();
+        $announcement = TravelerAnnouncement::where('user_id', $user->id)->findOrFail($id);
+
+        $request->validate([
+            'departure_city' => 'required|string|max:255',
+            'arrival_city' => 'required|string|max:255',
+            'departure_date' => 'required|date|after:today',
+            'departure_time' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Skip validation if value is null, empty string, or just whitespace
+                    if (!$value || $value === '' || trim($value) === '') {
+                        return;
+                    }
+                    
+                    // Handle different time formats (H:i, H:i:s, etc.)
+                    $timeValue = trim($value);
+                    
+                    // Check if it's a valid time format (H:i or H:i:s)
+                    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/', $timeValue)) {
+                        $fail('L\'heure de départ doit être au format HH:MM.');
+                        return;
+                    }
+                    
+                    $arrivalDate = $request->input('estimated_arrival_date');
+                    $departureDate = $request->input('departure_date');
+                    
+                    // If arrival date is same as departure date, departure time is required
+                    if ($arrivalDate && $departureDate && $arrivalDate === $departureDate && !$value) {
+                        $fail('L\'heure de départ est requise lorsque l\'arrivée est prévue le même jour.');
+                    }
+                }
+            ],
+            'available_kg' => 'required|numeric|min:0.1|max:100',
+            'description' => 'nullable|string|max:1000',
+            'transport_mode' => 'nullable|string|max:255',
+            'estimated_arrival_date' => 'nullable|date|after_or_equal:departure_date',
+            'estimated_arrival_time' => [
+                'nullable',
+                function ($attribute, $value, $fail) use ($request) {
+                    // Skip validation if value is null, empty string, or just whitespace
+                    if (!$value || $value === '' || trim($value) === '') {
+                        return;
+                    }
+                    
+                    // Handle different time formats (H:i, H:i:s, etc.)
+                    $timeValue = trim($value);
+                    
+                    // Check if it's a valid time format (H:i or H:i:s)
+                    if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/', $timeValue)) {
+                        $fail('L\'heure d\'arrivée doit être au format HH:MM.');
+                        return;
+                    }
+                    
+                    $arrivalDate = $request->input('estimated_arrival_date');
+                    $departureDate = $request->input('departure_date');
+                    $departureTime = $request->input('departure_time');
+                    
+                    // If arrival date is same as departure date, both times are required
+                    if ($arrivalDate && $departureDate && $arrivalDate === $departureDate) {
+                        if (!$departureTime) {
+                            $fail('L\'heure de départ est requise lorsque l\'arrivée est prévue le même jour.');
+                        }
+                        if (!$value) {
+                            $fail('L\'heure d\'arrivée est requise lorsque l\'arrivée est prévue le même jour que le départ.');
+                        }
+                        
+                        // If both times provided, arrival must be after departure
+                        if ($departureTime && $value) {
+                            $depDateTime = new \DateTime($departureDate . ' ' . $departureTime);
+                            $arrDateTime = new \DateTime($arrivalDate . ' ' . $value);
+                            
+                            if ($arrDateTime <= $depDateTime) {
+                                $fail('L\'heure d\'arrivée doit être postérieure à l\'heure de départ pour une livraison le même jour.');
+                            }
+                        }
+                    }
+                }
+            ],
+            'price_per_kg' => 'nullable|numeric|min:0|max:1000',
+            'extra_notes' => 'nullable|string|max:1000',
+        ]);
+
+        // Update announcement
+        $announcement->update([
+            'departure_city' => $request->departure_city,
+            'arrival_city' => $request->arrival_city,
+            'departure_date' => $request->departure_date,
+            'available_kg' => $request->available_kg,
+            'description' => $request->description,
+        ]);
+
+        // Update announcement details
+        $announcement->details->update([
+            'transport_mode' => $request->transport_mode,
+            'departure_time' => $request->departure_time,
+            'estimated_arrival_date' => $request->estimated_arrival_date,
+            'estimated_arrival_time' => $request->estimated_arrival_time,
+            'price_per_kg' => $request->price_per_kg,
+            'extra_notes' => $request->extra_notes,
+        ]);
+
+        return redirect()->route('dashboard.my-announcements')
+            ->with('success', 'Annonce de voyage mise à jour avec succès !');
     }
 
     /**

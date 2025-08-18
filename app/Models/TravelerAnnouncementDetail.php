@@ -13,7 +13,9 @@ class TravelerAnnouncementDetail extends Model
     protected $fillable = [
         'announcement_id',
         'transport_mode',
+        'departure_time',
         'estimated_arrival_date',
+        'estimated_arrival_time',
         'price_per_kg',
         'extra_notes',
     ];

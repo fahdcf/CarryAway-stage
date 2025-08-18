@@ -213,6 +213,139 @@ class AIController extends Controller
         return view('debug.ai-sender');
     }
 
+    /**
+     * Suggest a price per kg (MAD/kg) for traveler announcements using Gemini.
+     */
+    public function suggestPricePerKg(Request $request)
+    {
+        $validated = $request->validate([
+            'departure_city' => 'nullable|string|max:100',
+            'arrival_city' => 'nullable|string|max:100',
+            'departure_date' => 'nullable|date',
+            'available_kg' => 'nullable|numeric|min:0.1|max:1000',
+            'transport_mode' => 'nullable|string|max:50',
+            'description' => 'nullable|string|max:1000',
+            'no_fallback' => 'sometimes|boolean',
+        ]);
+
+        $noFallback = $request->boolean('no_fallback');
+
+        $apiKey = config('services.google_gemini.key')
+            ?: env('GEMINI_API_KEY')
+            ?: '';
+
+        if (empty($apiKey)) {
+            return response()->json(['error' => 'API key missing'], 500);
+        }
+
+        $forced = config('services.google_gemini.force_endpoint_url');
+        $model = config('services.google_gemini.model', 'gemini-1.5-flash');
+        $endpoint = $forced ?: ('https://generativelanguage.googleapis.com/v1/models/' . $model . ':generateContent?key=' . urlencode($apiKey));
+
+        $prompt = $this->buildPricePerKgPrompt($validated);
+
+        try {
+            $disableSslVerify = config('services.google_gemini.disable_ssl_verify', false);
+            $body = [
+                'contents' => [[
+                    'role' => 'user',
+                    'parts' => [[ 'text' => $prompt ]],
+                ]],
+            ];
+
+            $http = Http::timeout(12)->withHeaders(['Content-Type' => 'application/json']);
+            if ($disableSslVerify) { $http = $http->withoutVerifying(); }
+            $res = $http->post($endpoint, $body);
+
+            $json = $res->json();
+            $text = data_get($json, 'candidates.0.content.parts.0.text', '') ?: '';
+            $value = $this->extractPricePerKg($text);
+
+            if ($value === null) {
+                // Retry with stricter minimal prompt
+                $retryPrompt = 'Answer ONLY with this JSON: {"price_per_kg_mad": <number>} for Morocco market. No extra text.';
+                $retryBody = [ 'contents' => [[ 'role' => 'user', 'parts' => [[ 'text' => $retryPrompt . "\n\nContext (JSON): " . json_encode($validated, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ]] ]] ];
+                $retry = $http->timeout(8)->post($endpoint, $retryBody);
+                $retryText = data_get($retry->json(), 'candidates.0.content.parts.0.text', '') ?: '';
+                $value = $this->extractPricePerKg($retryText);
+            }
+
+            if ($value === null) {
+                if ($noFallback) {
+                    return response()->json(['error' => 'no_value'], 422);
+                }
+                // Conservative fallback heuristic
+                $fallback = $this->computePricePerKgFallback($validated);
+                return response()->json(['price_per_kg_mad' => $fallback, 'source' => 'fallback']);
+            }
+
+            return response()->json(['price_per_kg_mad' => $value, 'source' => 'gemini']);
+        } catch (\Throwable $e) {
+            if ($noFallback) {
+                return response()->json(['error' => 'exception'], 500);
+            }
+            $fallback = $this->computePricePerKgFallback($validated);
+            return response()->json(['price_per_kg_mad' => $fallback, 'source' => 'fallback_error']);
+        }
+    }
+
+    private function buildPricePerKgPrompt(array $data): string
+    {
+        $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return <<<PROMPT
+You are a pricing assistant for peer-to-peer parcel transport in Morocco. Suggest a fair market price per kg in MAD for a traveler transporting parcels.
+
+Context (JSON): {$json}
+
+Consider: route difficulty (departure_city to arrival_city), transport_mode, available_kg (supply), demand seasonality (departure_date), and description.
+
+Answer ONLY with this JSON: {"price_per_kg_mad": <number>} with a reasonable Moroccan price, decimals allowed, no extra text.
+PROMPT;
+    }
+
+    private function extractPricePerKg(?string $text): ?float
+    {
+        if (!is_string($text) || $text === '') return null;
+        $parsed = json_decode($text, true);
+        if (is_array($parsed) && array_key_exists('price_per_kg_mad', $parsed) && is_numeric($parsed['price_per_kg_mad'])) {
+            return (float)$parsed['price_per_kg_mad'];
+        }
+        if (preg_match('/\d+(?:[\.,]\d+)?/', $text, $m)) {
+            return (float) str_replace(',', '.', $m[0]);
+        }
+        return null;
+    }
+
+    private function computePricePerKgFallback(array $data): float
+    {
+        $mode = strtolower((string)($data['transport_mode'] ?? ''));
+        $routeFactor = 1.0;
+        $available = (float)($data['available_kg'] ?? 0);
+
+        // Route heuristic: long routes tend to be costlier
+        $from = strtolower((string)($data['departure_city'] ?? ''));
+        $to = strtolower((string)($data['arrival_city'] ?? ''));
+        if ($from && $to && $from !== $to) {
+            // crude distance proxy by name difference length
+            $routeFactor = min(1.6, 1.0 + abs(strlen($from) - strlen($to)) * 0.03);
+        }
+
+        // Transport mode factor
+        $modeFactor = match ($mode) {
+            'avion' => 1.6,
+            'train' => 1.2,
+            'bus' => 1.0,
+            'voiture' => 1.1,
+            default => 1.0,
+        };
+
+        // Supply effect: more available kg -> slightly lower price
+        $supplyFactor = $available > 10 ? 0.9 : 1.0;
+
+        $base = 12.0; // MAD/kg baseline
+        $price = $base * $routeFactor * $modeFactor * $supplyFactor;
+        return round(max(5.0, min($price, 100.0)), 2);
+    }
     private function buildPrompt(array $data): string
     {
         $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
