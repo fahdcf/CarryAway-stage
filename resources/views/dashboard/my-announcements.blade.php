@@ -35,25 +35,32 @@
     </div>
 
     <!-- Search and Filter Section -->
-    <div class="bg-white shadow rounded-lg mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Rechercher et filtrer</h3>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6">
+        <div class="px-8 py-6 border-b border-gray-200">
+            <h3 class="text-xl font-semibold text-gray-900">Rechercher et filtrer</h3>
         </div>
-        <div class="p-6">
-            <form method="GET" action="{{ route('dashboard.my-announcements') }}" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-8">
+            <form method="GET" action="{{ route('dashboard.my-announcements') }}" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <!-- Search Input -->
                     <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Rechercher</label>
+                        <label for="search" class="block text-sm font-semibold text-gray-700 mb-2">Rechercher</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
                         <input type="text" name="search" id="search" value="{{ request('search') }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                   class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200"
                                placeholder="Ville de départ, ville d'arrivée...">
+                        </div>
                     </div>
 
                     <!-- Type Filter -->
                     <div>
-                        <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type d'annonce</label>
-                        <select name="type" id="type" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">Type d'annonce</label>
+                        <select name="type" id="type" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="">Tous les types</option>
                             <option value="traveler" {{ request('type') == 'traveler' ? 'selected' : '' }}>Voyage</option>
                             <option value="sender" {{ request('type') == 'sender' ? 'selected' : '' }}>Livraison</option>
@@ -62,8 +69,8 @@
 
                     <!-- Status Filter -->
                     <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                        <select name="status" id="status" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Statut</label>
+                        <select name="status" id="status" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="">Tous les statuts</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -72,8 +79,8 @@
 
                     <!-- Sort By -->
                     <div>
-                        <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Trier par</label>
-                        <select name="sort" id="sort" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="sort" class="block text-sm font-semibold text-gray-700 mb-2">Trier par</label>
+                        <select name="sort" id="sort" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="created_at_desc" {{ request('sort') == 'created_at_desc' ? 'selected' : '' }}>Plus récentes</option>
                             <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>Plus anciennes</option>
                             <option value="departure_date_asc" {{ request('sort') == 'departure_date_asc' ? 'selected' : '' }}>Date de départ</option>
@@ -81,16 +88,16 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex justify-between items-center pt-4">
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-200 transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Rechercher
                     </button>
                     
                     @if(request('search') || request('type') || request('status') || request('sort'))
-                        <a href="{{ route('dashboard.my-announcements') }}" class="text-sm text-gray-500 hover:text-gray-700">
+                        <a href="{{ route('dashboard.my-announcements') }}" class="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                             Effacer les filtres
                         </a>
                     @endif

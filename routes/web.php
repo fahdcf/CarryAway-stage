@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AIController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\MessageController;
 
 // Page d'accueil
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -84,15 +85,47 @@ Route::get('/settings', function () {
     return view('settings.index');
 })->name('settings.index')->middleware('auth');
 
-Route::get('/messages', function () {
-    return view('messages.index');
-})->name('messages.index')->middleware('auth');
-
-Route::get('/notifications', function () {
-    return view('notifications.index');
-})->name('notifications.index')->middleware('auth');
+Route::get('/messages', [MessageController::class, 'index'])->name('messages.index')->middleware('auth');
+Route::get('/messages/{chatId}', [MessageController::class, 'show'])->name('messages.show')->middleware('auth');
+Route::post('/messages/{chatId}', [MessageController::class, 'store'])->name('messages.store')->middleware('auth');
+Route::get('/messages/create-chat/{requestId}', [MessageController::class, 'createChat'])->name('messages.create-chat')->middleware('auth');
 
 Route::get('/requests', [UserDashboardController::class, 'requests'])->name('requests.index')->middleware('auth');
+Route::post('/requests/create', [UserDashboardController::class, 'createRequest'])->name('requests.create')->middleware('auth');
+Route::post('/requests/create-sender', [UserDashboardController::class, 'createSenderRequest'])->name('requests.create-sender')->middleware('auth');
+Route::post('/requests/request-package-form', [UserDashboardController::class, 'requestPackageForm'])->name('requests.request-package-form')->middleware('auth');
+Route::post('/requests/submit-package-form', [UserDashboardController::class, 'submitPackageForm'])->name('requests.submit-package-form')->middleware('auth');
+Route::post('/requests/request-traveler-form', [UserDashboardController::class, 'requestTravelerForm'])->name('requests.request-traveler-form')->middleware('auth');
+Route::post('/requests/submit-traveler-form', [UserDashboardController::class, 'submitTravelerForm'])->name('requests.submit-traveler-form')->middleware('auth');
+Route::get('/requests/{id}/progress', [App\Http\Controllers\RequestProgressController::class, 'show'])->name('requests.progress')->middleware('auth');
+Route::post('/requests/{id}/progress', [App\Http\Controllers\RequestProgressController::class, 'update'])->name('requests.progress.update')->middleware('auth');
+Route::delete('/requests', [UserDashboardController::class, 'deleteRequest'])->name('requests.delete')->middleware('auth');
+Route::post('/requests/accept', [UserDashboardController::class, 'acceptRequest'])->name('requests.accept')->middleware('auth');
+Route::post('/requests/reject', [UserDashboardController::class, 'rejectRequest'])->name('requests.reject')->middleware('auth');
+
+// Verification routes
+Route::post('/verification/meeting-code', [App\Http\Controllers\VerificationController::class, 'verifyMeetingCode'])->name('verification.meeting-code')->middleware('auth');
+Route::post('/verification/delivery-code', [App\Http\Controllers\VerificationController::class, 'verifyDeliveryCode'])->name('verification.delivery-code')->middleware('auth');
+Route::post('/verification/mark-completed', [App\Http\Controllers\VerificationController::class, 'markAsCompleted'])->name('verification.mark-completed')->middleware('auth');
+Route::get('/verification/codes/{request_id}', [App\Http\Controllers\VerificationController::class, 'getVerificationCodes'])->name('verification.codes')->middleware('auth');
+
+// Notification routes
+Route::middleware('auth')->group(function () {
+    Route::get('/notifications', [App\Http\Controllers\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/mark-read', [App\Http\Controllers\NotificationController::class, 'markAsRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('notifications.mark-all-read');
+    Route::delete('/notifications', [App\Http\Controllers\NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::get('/notifications/unread-count', [App\Http\Controllers\NotificationController::class, 'getUnreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications/latest', [App\Http\Controllers\NotificationController::class, 'getLatest'])->name('notifications.latest');
+});
+
+// Public profile routes
+Route::get('/user/{userId}', [App\Http\Controllers\PublicProfileController::class, 'show'])->name('profiles.show');
+Route::middleware('auth')->group(function () {
+    Route::post('/user/{userId}/review', [App\Http\Controllers\PublicProfileController::class, 'storeReview'])->name('profiles.review.store');
+    Route::put('/user/{userId}/review', [App\Http\Controllers\PublicProfileController::class, 'updateReview'])->name('profiles.review.update');
+    Route::delete('/user/{userId}/review', [App\Http\Controllers\PublicProfileController::class, 'deleteReview'])->name('profiles.review.delete');
+});
 
 // AI helper routes (proxy Gemini)
 Route::post('/api/ai/suggest-declared-value', [AIController::class, 'suggestDeclaredValue'])

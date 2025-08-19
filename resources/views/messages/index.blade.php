@@ -12,14 +12,6 @@
                     <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">Messages</h1>
                     <p class="text-gray-600 text-sm lg:text-base">Communiquez avec les autres utilisateurs</p>
                 </div>
-                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                    <button class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Nouveau message
-                    </button>
-                </div>
             </div>
         </div>
     </div>
@@ -39,151 +31,111 @@
 
     <!-- Messages Interface -->
     <div class="bg-white shadow rounded-lg">
-        <div class="flex h-96">
+        <div class="flex h-[600px]">
             <!-- Conversations List -->
-            <div class="w-1/3 border-r border-gray-200">
-                <div class="p-4 border-b border-gray-200">
+            <div class="w-1/3 border-r border-gray-200 bg-gray-50">
+                <div class="p-4 border-b border-gray-200 bg-white">
                     <h3 class="text-lg font-medium text-gray-900">Conversations</h3>
                 </div>
                 <div class="overflow-y-auto h-full">
-                    <!-- Sample conversations -->
-                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-medium">JD</span>
+                    @forelse($chats as $chat)
+                        <div class="p-4 border-b border-gray-100 hover:bg-white cursor-pointer transition-all duration-200 conversation-item bg-white" 
+                             data-chat-id="{{ $chat->id }}"
+                             data-other-user="{{ $chat->other_user->name }}"
+                             data-announcement-title="{{ $chat->announcement_title }}"
+                             data-show-url="{{ route('messages.show', $chat->id) }}"
+                             data-post-url="{{ route('messages.store', $chat->id) }}">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
+                                        <span class="text-white font-semibold text-sm">{{ substr($chat->other_user->name, 0, 2) }}</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">Jean Dupont</p>
-                                <p class="text-sm text-gray-500 truncate">Bonjour, je suis intéressé par votre annonce...</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                    Nouveau
-                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between">
+                                        <p class="text-sm font-semibold text-gray-900 truncate">
+                                            <a href="{{ route('profiles.show', $chat->other_user->id) }}" 
+                                               class="inline-block px-2 py-1 rounded hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200">
+                                                {{ $chat->other_user->name }}
+                                            </a>
+                                        </p>
+                                        @if($chat->latest_message)
+                                            <span class="text-xs text-gray-400">{{ $chat->latest_message->sent_at->diffForHumans() }}</span>
+                                        @endif
+                                    </div>
+                                    <p class="text-xs text-blue-600 font-medium truncate mb-1">{{ $chat->announcement_title }}</p>
+                                    @if($chat->latest_message)
+                                        <p class="text-sm text-gray-600 truncate">{{ Str::limit($chat->latest_message->message, 40) }}</p>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic">Aucun message</p>
+                                    @endif
+                                </div>
+                                @if($chat->unread_count > 0)
+                                    <div class="flex-shrink-0">
+                                        <span class="inline-flex items-center justify-center w-6 h-6 bg-blue-500 text-white text-xs font-bold rounded-full">
+                                            {{ $chat->unread_count }}
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-medium">ML</span>
-                                </div>
+                    @empty
+                        <div class="text-center py-12">
+                            <div class="mx-auto h-16 w-16 text-gray-300">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                </svg>
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">Marie Laurent</p>
-                                <p class="text-sm text-gray-500 truncate">Parfait, on se retrouve demain à 14h</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <span class="text-xs text-gray-400">14:30</span>
-                            </div>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune conversation</h3>
+                            <p class="mt-1 text-sm text-gray-500">Créez une demande pour commencer à discuter !</p>
                         </div>
-                    </div>
-                    
-                    <div class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer">
-                        <div class="flex items-center space-x-3">
-                            <div class="flex-shrink-0">
-                                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
-                                    <span class="text-white font-medium">PM</span>
-                                </div>
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-medium text-gray-900">Pierre Martin</p>
-                                <p class="text-sm text-gray-500 truncate">Merci pour le transport, tout s'est bien passé</p>
-                            </div>
-                            <div class="flex-shrink-0">
-                                <span class="text-xs text-gray-400">Hier</span>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
 
             <!-- Message Content -->
-            <div class="flex-1 flex flex-col">
+            <div class="flex-1 flex flex-col bg-white" id="message-content">
                 <!-- Message Header -->
-                <div class="p-4 border-b border-gray-200">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                                <span class="text-white font-medium">JD</span>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-medium text-gray-900">Jean Dupont</h3>
-                                <p class="text-sm text-gray-500">En ligne</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <button class="p-2 text-gray-400 hover:text-gray-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                <div class="p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white" id="message-header">
+                    <div class="flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-3">
+                                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                 </svg>
-                            </button>
-                            <button class="p-2 text-gray-400 hover:text-gray-600">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
-                                </svg>
-                            </button>
+                            </div>
+                            <h3 class="text-lg font-medium text-gray-900">Sélectionnez une conversation</h3>
+                            <p class="text-sm text-gray-500">Choisissez une conversation pour commencer à discuter</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Messages -->
-                <div class="flex-1 overflow-y-auto p-4 space-y-4">
-                    <!-- Received message -->
-                    <div class="flex items-start space-x-3">
-                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <span class="text-white text-xs font-medium">JD</span>
+                <div class="flex-1 overflow-y-auto p-6 flex items-center justify-center bg-gray-50" id="messages-area">
+                    <div class="text-center text-gray-500">
+                        <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
                         </div>
-                        <div class="flex-1">
-                            <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
-                                <p class="text-sm text-gray-900">Bonjour, je suis intéressé par votre annonce de voyage Paris-Lyon. Est-ce que vous avez encore de la place disponible ?</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">14:25</p>
-                        </div>
-                    </div>
-
-                    <!-- Sent message -->
-                    <div class="flex items-start space-x-3 justify-end">
-                        <div class="flex-1">
-                            <div class="bg-blue-600 rounded-lg px-4 py-2 max-w-xs ml-auto">
-                                <p class="text-sm text-white">Bonjour Jean ! Oui, j'ai encore 5kg disponibles. Quand partez-vous ?</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1 text-right">14:27</p>
-                        </div>
-                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                            <span class="text-white text-xs font-medium">Moi</span>
-                        </div>
-                    </div>
-
-                    <!-- Received message -->
-                    <div class="flex items-start space-x-3">
-                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                            <span class="text-white text-xs font-medium">JD</span>
-                        </div>
-                        <div class="flex-1">
-                            <div class="bg-gray-100 rounded-lg px-4 py-2 max-w-xs">
-                                <p class="text-sm text-gray-900">Parfait ! Je pars vendredi matin. Combien coûte le transport ?</p>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">14:30</p>
-                        </div>
+                        <p class="text-sm font-medium text-gray-900 mb-1">Aucune conversation sélectionnée</p>
+                        <p class="text-sm text-gray-500">Sélectionnez une conversation dans la liste pour voir les messages</p>
                     </div>
                 </div>
 
                 <!-- Message Input -->
-                <div class="p-4 border-t border-gray-200">
-                    <div class="flex items-center space-x-3">
+                <div class="p-4 border-t border-gray-200 bg-white" id="message-input">
+                    <div class="flex items-center space-x-3 opacity-50">
                         <div class="flex-1">
                             <input type="text" placeholder="Tapez votre message..." 
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                   disabled>
                         </div>
-                        <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <button class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-400 cursor-not-allowed" disabled>
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                             </svg>
+                            Envoyer
                         </button>
                     </div>
                 </div>
@@ -191,4 +143,136 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const conversationItems = document.querySelectorAll('.conversation-item');
+    const messageHeader = document.getElementById('message-header');
+    const messagesArea = document.getElementById('messages-area');
+    const messageInput = document.getElementById('message-input');
+    
+    // Store chat data for easy access
+    const chatData = {};
+    @foreach($chats as $chat)
+        chatData['{{ $chat->id }}'] = {
+            otherUser: '{{ $chat->other_user->name }}',
+            announcementTitle: '{{ $chat->announcement_title }}',
+            messages: @json($chat->messages ?? [])
+        };
+    @endforeach
+
+    conversationItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const chatId = this.dataset.chatId;
+            const chat = chatData[chatId];
+            
+            if (!chat) return;
+            
+            // Update header with expand button
+            const showUrl = this.dataset.showUrl;
+            const postUrl = this.dataset.postUrl;
+            messageHeader.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
+                            <span class="text-white font-semibold text-sm">${chat.otherUser.substring(0, 2)}</span>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">${chat.otherUser}</h3>
+                            <p class="text-sm text-gray-500">${chat.announcementTitle}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <a href="${showUrl}" class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-lg text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path>
+                            </svg>
+                            Développer
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            // Update messages area with professional design
+            if (chat.messages && chat.messages.length > 0) {
+                let messagesHtml = '';
+                chat.messages.forEach(message => {
+                    const isOwn = message.sender_id === '{{ auth()->id() }}';
+                    const messageClass = isOwn ? 'justify-end' : '';
+                    const bubbleClass = isOwn ? 'bg-blue-600 text-white shadow-md' : 'bg-white text-gray-900 border border-gray-200 shadow-sm';
+                    const time = new Date(message.sent_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                    
+                    messagesHtml += `
+                        <div class="flex items-start space-x-3 ${messageClass} mb-4">
+                            ${!isOwn ? `<div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
+                                <span class="text-white text-xs font-semibold">${chat.otherUser.substring(0, 2)}</span>
+                            </div>` : ''}
+                            <div class="flex-1 ${isOwn ? 'text-right' : ''} max-w-xs">
+                                <div class="inline-block ${bubbleClass} rounded-2xl px-4 py-3">
+                                    <div class="text-sm leading-relaxed" style="direction: ltr; text-align: left;">${message.message.replace(/\n/g, '<br>')}</div>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2 ${isOwn ? 'text-right' : ''}">${time}</p>
+                            </div>
+                            ${isOwn ? `<div class="w-8 h-8 bg-gradient-to-br from-green-500 to-green-600 rounded-full flex items-center justify-center shadow-sm">
+                                <span class="text-white text-xs font-semibold">Moi</span>
+                            </div>` : ''}
+                        </div>
+                    `;
+                });
+                messagesArea.innerHTML = `<div class="space-y-2">${messagesHtml}</div>`;
+                messagesArea.classList.remove('bg-gray-50', 'flex', 'items-center', 'justify-center');
+                messagesArea.classList.add('bg-white');
+            } else {
+                messagesArea.innerHTML = `
+                    <div class="text-center py-12">
+                        <div class="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                        </div>
+                        <p class="text-sm font-medium text-gray-900 mb-1">Aucun message</p>
+                        <p class="text-sm text-gray-500">Commencez la conversation en envoyant le premier message !</p>
+                    </div>
+                `;
+                messagesArea.classList.remove('bg-gray-50', 'flex', 'items-center', 'justify-center');
+                messagesArea.classList.add('bg-white');
+            }
+            
+            // Update input area with working form
+            messageInput.innerHTML = `
+                <form method="POST" action="${postUrl}" class="space-y-3">
+                    @csrf
+                    <div>
+                        <textarea name="message" rows="3" placeholder="Tapez votre message..." 
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-y"
+                                  maxlength="10000" required></textarea>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-400">Appuyez sur Entrée pour une nouvelle ligne</span>
+                        <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                            Envoyer
+                        </button>
+                    </div>
+                </form>
+            `;
+            
+            // Highlight selected conversation
+            conversationItems.forEach(item => {
+                item.classList.remove('bg-blue-50', 'border-l-4', 'border-l-blue-500');
+                item.classList.add('bg-white');
+            });
+            this.classList.remove('bg-white');
+            this.classList.add('bg-blue-50', 'border-l-4', 'border-l-blue-500');
+        });
+    });
+    
+    // Auto-select first conversation if available
+    if (conversationItems.length > 0) {
+        conversationItems[0].click();
+    }
+});
+</script>
 @endsection

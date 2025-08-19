@@ -17,8 +17,9 @@ return new class extends Migration
             $table->enum('initiator_role', ['sender', 'traveler']);
             $table->foreignUuid('sender_announcement_id')->nullable()->constrained('sender_announcements')->onDelete('cascade');
             $table->foreignUuid('traveler_announcement_id')->nullable()->constrained('traveler_announcements')->onDelete('cascade');
+            $table->foreignUuid('announcement_owner_id')->constrained('users')->onDelete('cascade');
             $table->decimal('proposed_price', 8, 2)->nullable();
-            $table->enum('status', ['pending', 'accepted', 'refused', 'completed'])->default('pending');
+            $table->enum('status', ['pending', 'accepted', 'rejected', 'completed'])->default('pending');
             $table->string('pickup_location')->nullable();
             $table->string('delivery_location')->nullable();
             $table->timestamps();

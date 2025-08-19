@@ -15,10 +15,12 @@ class Message extends Model
         'sender_id',
         'message',
         'sent_at',
+        'read_at',
     ];
 
     protected $casts = [
         'sent_at' => 'datetime',
+        'read_at' => 'datetime',
     ];
 
     /**

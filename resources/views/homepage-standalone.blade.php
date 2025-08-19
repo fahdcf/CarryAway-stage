@@ -421,7 +421,7 @@
                 <!-- Desktop Actions -->
                 <div class="hidden lg:flex items-center space-x-4">
                     @auth
-                        <a href="{{ route('dashboard.index') ?? '#' }}" class="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm hover:scale-105 transition-transform">Tableau de bord</a>
+                        <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard.index') }}" class="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors text-sm hover:scale-105 transition-transform">{{ Auth::user()->isAdmin() ? 'Admin Dashboard' : 'Tableau de bord' }}</a>
                         <form method="POST" action="{{ route('logout') ?? '#' }}" style="display: inline;">
                             @csrf
                             <button type="submit" class="px-6 py-2 bg-gray-900 text-white rounded-lg font-medium hover:bg-gray-800 transition-all text-sm hover:scale-105 transition-transform">Se déconnecter</button>
@@ -448,7 +448,7 @@
                     <a href="#" class="block text-gray-600 hover:text-gray-900 font-medium text-sm">À propos</a>
                     <div class="pt-4 space-y-2">
                         @auth
-                            <a href="{{ route('dashboard.index') ?? '#' }}" class="block w-full text-left text-gray-600 hover:text-gray-900 font-medium text-sm">Tableau de bord</a>
+                            <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard.index') }}" class="block w-full text-left text-gray-600 hover:text-gray-900 font-medium text-sm">{{ Auth::user()->isAdmin() ? 'Admin Dashboard' : 'Tableau de bord' }}</a>
                             <form method="POST" action="{{ route('logout') ?? '#' }}">
                                 @csrf
                                 <button type="submit" class="block w-full px-6 py-2 bg-gray-900 text-white rounded-lg font-medium text-center text-sm">Se déconnecter</button>

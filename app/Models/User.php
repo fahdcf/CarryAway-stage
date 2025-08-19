@@ -200,4 +200,28 @@ class User extends Authenticatable
     {
         return $this->isApproved() && !$this->isSuspended();
     }
+
+    /**
+     * Get unread notifications count
+     */
+    public function unreadNotificationsCount(): int
+    {
+        return $this->notifications()->unread()->count();
+    }
+
+    /**
+     * Get latest notifications
+     */
+    public function latestNotifications(int $limit = 10)
+    {
+        return $this->notifications()->latest()->limit($limit)->get();
+    }
+
+    /**
+     * Mark all notifications as read
+     */
+    public function markAllNotificationsAsRead(): void
+    {
+        $this->notifications()->unread()->update(['is_read' => true]);
+    }
 }

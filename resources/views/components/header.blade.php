@@ -21,9 +21,18 @@
         <!-- Right side: Actions and user menu -->
         <div class="flex items-center space-x-4">
             <!-- Notification and Search buttons -->
-            <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="Notifications">
-                <i data-lucide="bell" class="w-5 h-5"></i>
-            </button>
+            @auth
+                <div class="relative flex items-center">
+                    <a href="{{ route('notifications.index') }}" class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors flex items-center justify-center" title="Notifications">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        @if(Auth::user()->unreadNotificationsCount() > 0)
+                            <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold leading-none">
+                                {{ Auth::user()->unreadNotificationsCount() > 99 ? '99+' : Auth::user()->unreadNotificationsCount() }}
+                            </span>
+                        @endif
+                    </a>
+                </div>
+            @endauth
             <button class="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors" title="Rechercher">
                 <i data-lucide="search" class="w-5 h-5"></i>
             </button>
@@ -41,9 +50,9 @@
                     {{-- User Dropdown Menu --}}
                     <div class="absolute right-0 top-full mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg hidden z-50" id="user-menu">
                         <div class="py-1">
-                            <a href="{{ route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <a href="{{ Auth::user()->isAdmin() ? route('admin.dashboard') : route('dashboard.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="layout-dashboard" class="w-4 h-4 mr-2 inline"></i>
-                                Tableau de bord
+                                {{ Auth::user()->isAdmin() ? 'Admin Dashboard' : 'Tableau de bord' }}
                             </a>
                             <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                                 <i data-lucide="user" class="w-4 h-4 mr-2 inline"></i>

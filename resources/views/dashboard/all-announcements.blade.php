@@ -35,24 +35,31 @@
     </div>
 
     <!-- Advanced Search and Filter Section -->
-    <div class="bg-white shadow rounded-lg mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Recherche avancée</h3>
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 mb-6" x-data="{ showAdvancedFilters: false }">
+        <div class="px-8 py-6 border-b border-gray-200">
+            <h3 class="text-xl font-semibold text-gray-900">Recherche avancée</h3>
         </div>
-        <div class="p-6">
+        <div class="p-8">
             <form method="GET" action="{{ route('dashboard.all-announcements') }}" class="space-y-6">
                 <!-- Basic Search -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
-                        <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Recherche générale</label>
+                        <label for="search" class="block text-sm font-semibold text-gray-700 mb-2">Recherche générale</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </div>
                         <input type="text" name="search" id="search" value="{{ request('search') }}"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                   class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200"
                                placeholder="Ville, description, utilisateur...">
+                        </div>
                     </div>
 
                     <div>
-                        <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type d'annonce</label>
-                        <select name="type" id="type" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="type" class="block text-sm font-semibold text-gray-700 mb-2">Type d'annonce</label>
+                        <select name="type" id="type" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="">Tous les types</option>
                             <option value="traveler" {{ request('type') == 'traveler' ? 'selected' : '' }}>Voyage</option>
                             <option value="sender" {{ request('type') == 'sender' ? 'selected' : '' }}>Livraison</option>
@@ -60,8 +67,8 @@
                     </div>
 
                     <div>
-                        <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Trier par</label>
-                        <select name="sort" id="sort" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="sort" class="block text-sm font-semibold text-gray-700 mb-2">Trier par</label>
+                        <select name="sort" id="sort" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="created_at_desc" {{ request('sort') == 'created_at_desc' ? 'selected' : '' }}>Plus récentes</option>
                             <option value="created_at_asc" {{ request('sort') == 'created_at_asc' ? 'selected' : '' }}>Plus anciennes</option>
                             <option value="departure_date_asc" {{ request('sort') == 'departure_date_asc' ? 'selected' : '' }}>Date de départ</option>
@@ -71,8 +78,8 @@
                     </div>
 
                     <div>
-                        <label for="limit" class="block text-sm font-medium text-gray-700 mb-1">Résultats par page</label>
-                        <select name="limit" id="limit" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        <label for="limit" class="block text-sm font-semibold text-gray-700 mb-2">Résultats par page</label>
+                        <select name="limit" id="limit" class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                             <option value="12" {{ request('limit') == '12' ? 'selected' : '' }}>12</option>
                             <option value="24" {{ request('limit') == '24' ? 'selected' : '' }}>24</option>
                             <option value="48" {{ request('limit') == '48' ? 'selected' : '' }}>48</option>
@@ -80,60 +87,70 @@
                     </div>
                 </div>
 
-                <!-- Advanced Filters -->
+                <!-- Advanced Filters Toggle -->
                 <div class="border-t border-gray-200 pt-6">
-                    <h4 class="text-md font-medium text-gray-900 mb-4">Filtres avancés</h4>
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <button type="button" @click="showAdvancedFilters = !showAdvancedFilters" 
+                            class="flex items-center space-x-2 text-gray-700 hover:text-gray-900 transition-colors duration-200">
+                        <svg class="w-5 h-5 transition-transform duration-200" :class="{ 'rotate-90': showAdvancedFilters }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                        <span class="text-md font-semibold">Filtres avancés</span>
+                    </button>
+                </div>
+
+                <!-- Advanced Filters -->
+                <div x-show="showAdvancedFilters" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 transform -translate-y-2" x-transition:enter-end="opacity-100 transform translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 transform translate-y-0" x-transition:leave-end="opacity-0 transform -translate-y-2" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <!-- Date Range -->
                         <div>
-                            <label for="date_from" class="block text-sm font-medium text-gray-700 mb-1">Date de départ (dès)</label>
+                            <label for="date_from" class="block text-sm font-semibold text-gray-700 mb-2">Date de départ (dès)</label>
                             <input type="date" name="date_from" id="date_from" value="{{ request('date_from') }}"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
 
                         <div>
-                            <label for="date_to" class="block text-sm font-medium text-gray-700 mb-1">Date de départ (jusqu'au)</label>
+                            <label for="date_to" class="block text-sm font-semibold text-gray-700 mb-2">Date de départ (jusqu'au)</label>
                             <input type="date" name="date_to" id="date_to" value="{{ request('date_to') }}"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
 
                         <div>
-                            <label for="weight_min" class="block text-sm font-medium text-gray-700 mb-1">Poids minimum (kg)</label>
+                            <label for="weight_min" class="block text-sm font-semibold text-gray-700 mb-2">Poids minimum (kg)</label>
                             <input type="number" name="weight_min" id="weight_min" value="{{ request('weight_min') }}" min="0" step="0.1"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
 
                         <div>
-                            <label for="weight_max" class="block text-sm font-medium text-gray-700 mb-1">Poids maximum (kg)</label>
+                            <label for="weight_max" class="block text-sm font-semibold text-gray-700 mb-2">Poids maximum (kg)</label>
                             <input type="number" name="weight_max" id="weight_max" value="{{ request('weight_max') }}" min="0" step="0.1"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
 
                         <div>
-                            <label for="price_min" class="block text-sm font-medium text-gray-700 mb-1">Prix minimum (€/kg)</label>
+                            <label for="price_min" class="block text-sm font-semibold text-gray-700 mb-2">Prix minimum (€/kg)</label>
                             <input type="number" name="price_min" id="price_min" value="{{ request('price_min') }}" min="0" step="0.01"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
 
                         <div>
-                            <label for="price_max" class="block text-sm font-medium text-gray-700 mb-1">Prix maximum (€/kg)</label>
+                            <label for="price_max" class="block text-sm font-semibold text-gray-700 mb-2">Prix maximum (€/kg)</label>
                             <input type="number" name="price_max" id="price_max" value="{{ request('price_max') }}" min="0" step="0.01"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                                   class="block w-full px-3 py-3 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-gray-900 transition-colors duration-200">
                         </div>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="flex justify-between items-center pt-4 border-t border-gray-200">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button type="submit" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-semibold rounded-xl text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 transition-all duration-200 transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
                         Rechercher
                     </button>
                     
                     @if(request('search') || request('type') || request('sort') || request('limit') || request('date_from') || request('date_to') || request('weight_min') || request('weight_max') || request('price_min') || request('price_max'))
-                        <a href="{{ route('dashboard.all-announcements') }}" class="text-sm text-gray-500 hover:text-gray-700">
+                        <a href="{{ route('dashboard.all-announcements') }}" class="text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors duration-200">
                             Effacer tous les filtres
                         </a>
                     @endif
@@ -174,7 +191,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 @foreach($otherTravelerAnnouncements as $announcement)
                     @php $isOwn = auth()->check() && auth()->id() === $announcement->user_id; @endphp
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 h-full" x-data="{ showModal: false }">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 h-full" x-data="{ showModal: false, showRequestModal: false }">
                         <div class="p-6 flex flex-col h-full">
                             <!-- Header -->
                             <div class="flex items-start justify-between mb-4">
@@ -186,7 +203,12 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">{{ $announcement->user->name }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">
+                                            <a href="{{ route('profiles.show', $announcement->user->id) }}" 
+                                               class="hover:text-blue-600 transition-colors duration-200 cursor-pointer">
+                                                {{ $announcement->user->name }}
+                                            </a>
+                                        </h3>
                                         <p class="text-sm text-gray-500">{{ $announcement->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
@@ -254,7 +276,7 @@
                                     </div>
                                 @else
                                     <div class="flex items-center space-x-2">
-                                        <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <button @click="showRequestModal = true" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                             Demander le trajectoire
                                         </button>
                                         <button type="button" @click="showModal = true"
@@ -383,6 +405,86 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Modal: Create Request for Traveler Announcement -->
+                        <div x-show="showRequestModal" x-transition.opacity class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4" @keydown.window.escape="showRequestModal = false">
+                            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.away="showRequestModal = false">
+                                <!-- Header -->
+                                <div class="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Demander le trajectoire</h3>
+                                                <p class="text-gray-100 text-sm">{{ $announcement->departure_city }} → {{ $announcement->arrival_city }}</p>
+                                            </div>
+                                        </div>
+                                        <button class="p-2 text-white hover:bg-white hover:bg-opacity-10 rounded-full transition-colors duration-200" @click="showRequestModal = false">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                </button>
+                                    </div>
+                                </div>
+
+                                <!-- Form -->
+                                <form action="{{ route('requests.create') }}" method="POST" class="p-6 space-y-4">
+                                    @csrf
+                                    <input type="hidden" name="traveler_announcement_id" value="{{ $announcement->id }}">
+                                    
+                                    <div>
+                                        <label for="package_weight_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Poids du colis (kg)</label>
+                                        <input type="number" name="package_weight" id="package_weight_{{ $announcement->id }}" step="0.1" min="0.1"
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                               placeholder="Poids en kg">
+                                    </div>
+
+                                    <div>
+                                        <label for="pickup_location_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Lieu de récupération</label>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-medium text-gray-600">{{ $announcement->departure_city }} :</span>
+                                            <input type="text" name="pickup_location" id="pickup_location_{{ $announcement->id }}" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                                   placeholder="Quartier, rue, point de repère...">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="delivery_location_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Lieu de livraison</label>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-medium text-gray-600">{{ $announcement->arrival_city }} :</span>
+                                            <input type="text" name="delivery_location" id="delivery_location_{{ $announcement->id }}" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                                   placeholder="Quartier, rue, point de repère...">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="description_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                                        <textarea name="description" id="description_{{ $announcement->id }}" rows="3"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                                                  placeholder="Décrivez votre colis, dimensions, type d'objet... (optionnel)"></textarea>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex space-x-3 pt-4">
+                                        <button type="button" @click="showRequestModal = false"
+                                                class="flex-1 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Annuler
+                                        </button>
+                                        <button type="submit"
+                                                class="flex-1 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
+                                            Envoyer la demande
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -396,7 +498,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
                 @foreach($otherSenderAnnouncements as $announcement)
                     @php $isOwn = auth()->check() && auth()->id() === $announcement->user_id; @endphp
-                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 h-full" x-data="{ showModal: false, activeImage: '' }">
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200 h-full" x-data="{ showModal: false, activeImage: '', showRequestModal: false }">
                         <div class="p-6 flex flex-col h-full">
                             <!-- Header -->
                             <div class="flex items-start justify-between mb-4">
@@ -407,7 +509,12 @@
                                         </svg>
                                     </div>
                                     <div>
-                                        <h3 class="text-lg font-semibold text-gray-900">{{ $announcement->user->name }}</h3>
+                                        <h3 class="text-lg font-semibold text-gray-900">
+                                            <a href="{{ route('profiles.show', $announcement->user->id) }}" 
+                                               class="hover:text-blue-600 transition-colors duration-200 cursor-pointer">
+                                                {{ $announcement->user->name }}
+                                            </a>
+                                        </h3>
                                         <p class="text-sm text-gray-500">{{ $announcement->created_at->diffForHumans() }}</p>
                                     </div>
                                 </div>
@@ -477,8 +584,8 @@
                                     </div>
                                 @else
                                 <div class="flex items-center space-x-2">
-                                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                                        Proposer mes services
+                                    <button @click="showRequestModal = true" class="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                        Demander
                                     </button>
                                     <button type="button" @click="showModal = true"
                                             class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md border border-gray-300 text-gray-700 bg-white hover:bg-gray-50">
@@ -520,17 +627,17 @@
                                             </div>
                                         </div>
                                         <button class="p-2 text-white hover:bg-white hover:bg-opacity-10 rounded-full transition-colors duration-200" @click="showModal = false">
-                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                        </button>
-                                    </div>
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
                                 </div>
 
                                 <!-- Content -->
                                 <div class="p-6 space-y-6 max-h-[32rem] overflow-y-auto">
                                     <!-- Photos Section -->
-                                    @if(!empty($pics))
+                                @if(!empty($pics))
                                         <div x-init="activeImage = activeImage || '{{ $firstImage }}'">
                                             <h4 class="text-sm font-semibold text-gray-900 mb-3 flex items-center">
                                                 <svg class="w-4 h-4 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -542,16 +649,16 @@
                                                 <img :src="activeImage || '{{ $firstImage }}'" alt="Photo du colis" class="w-full max-h-48 object-contain rounded-md mx-auto">
                                                 @if(count($pics) > 1)
                                                     <div class="flex space-x-2 overflow-x-auto mt-3 justify-center">
-                                                        @foreach($pics as $picture)
-                                                            @php
-                                                                $srcRaw = is_string($picture) ? $picture : '';
-                                                                $srcNorm = ltrim(str_replace('\\', '/', $srcRaw), '/');
-                                                                if (str_starts_with($srcNorm, 'public/')) { $srcNorm = substr($srcNorm, 7); } elseif (str_starts_with($srcNorm, 'storage/')) { $srcNorm = substr($srcNorm, 8); }
-                                                                $primary = asset('storage/' . $srcNorm);
-                                                            @endphp
+                                            @foreach($pics as $picture)
+                                                @php
+                                                    $srcRaw = is_string($picture) ? $picture : '';
+                                                    $srcNorm = ltrim(str_replace('\\', '/', $srcRaw), '/');
+                                                        if (str_starts_with($srcNorm, 'public/')) { $srcNorm = substr($srcNorm, 7); } elseif (str_starts_with($srcNorm, 'storage/')) { $srcNorm = substr($srcNorm, 8); }
+                                                        $primary = asset('storage/' . $srcNorm);
+                                                @endphp
                                                             <img src="{{ $primary }}" alt="Miniature" class="w-12 h-12 object-cover rounded-md border border-gray-200 cursor-pointer hover:ring-2 hover:ring-green-400 transition" @click="activeImage = '{{ $primary }}'">
-                                                        @endforeach
-                                                    </div>
+                                            @endforeach
+                                        </div>
                                                 @endif
                                             </div>
                                         </div>
@@ -598,19 +705,19 @@
                                             <div class="bg-blue-50 rounded-lg p-3">
                                                 <div class="text-xs text-blue-600 font-medium">Valeur déclarée</div>
                                                 <div class="text-lg font-bold text-blue-900">{{ number_format($announcement->details->declared_value, 2) }} DH</div>
-                                            </div>
-                                        @endif
+                                    </div>
+                                @endif
                                     </div>
 
                                     <!-- Additional Info -->
                                     @if($announcement->details && $announcement->details->item_type)
                                         <div class="flex items-center space-x-3 text-sm">
                                             <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                                             </svg>
                                             <span class="text-gray-600">Type d'objet:</span>
-                                            <span class="font-medium text-gray-900">{{ $announcement->details->item_type }}</span>
-                                        </div>
+                                            <span class="text-gray-900 font-medium">{{ $announcement->details->item_type }}</span>
+                                    </div>
                                     @endif
 
                                     @if($announcement->details && $announcement->details->dimensions)
@@ -620,8 +727,8 @@
                                             </svg>
                                             <span class="text-gray-600">Dimensions:</span>
                                             <span class="text-gray-900 font-medium">{{ $announcement->details->dimensions }}</span>
-                                        </div>
-                                    @endif
+                                </div>
+                            @endif
 
                                     @if($announcement->description)
                                         <div>
@@ -634,16 +741,88 @@
                                         <div>
                                             <h4 class="text-sm font-semibold text-gray-900 mb-2">Instructions spéciales</h4>
                                             <p class="text-sm text-gray-700 leading-relaxed">{{ $announcement->details->additional_info }}</p>
-                                        </div>
-                                    @endif
+                            </div>
+                                @endif
 
                                     <!-- Footer -->
                                     <div class="pt-4 border-t border-gray-200">
                                         <div class="text-xs text-gray-500">
                                             Publié {{ $announcement->created_at->diffForHumans() }}
                                         </div>
+                                </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal: Create Request for Sender Announcement -->
+                        <div x-show="showRequestModal" x-transition.opacity class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center p-4" @keydown.window.escape="showRequestModal = false">
+                            <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden" @click.away="showRequestModal = false">
+                                <!-- Header -->
+                                <div class="bg-gradient-to-r from-green-600 to-green-700 px-6 py-4">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                                </svg>
+                                            </div>
+                                            <div>
+                                                <h3 class="text-lg font-semibold text-white">Demander la livraison</h3>
+                                                <p class="text-gray-100 text-sm">{{ $announcement->pickup_city }} → {{ $announcement->delivery_city }}</p>
+                                            </div>
+                                        </div>
+                                        <button class="p-2 text-white hover:bg-white hover:bg-opacity-10 rounded-full transition-colors duration-200" @click="showRequestModal = false">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                            </svg>
+                                        </button>
                                     </div>
                                 </div>
+
+                                <!-- Form -->
+                                <form action="{{ route('requests.create-sender') }}" method="POST" class="p-6 space-y-4">
+                                    @csrf
+                                    <input type="hidden" name="sender_announcement_id" value="{{ $announcement->id }}">
+                                    
+                                    <div>
+                                        <label for="proposed_price_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Prix proposé (DH)</label>
+                                        <input type="number" name="proposed_price" id="proposed_price_{{ $announcement->id }}" step="0.01" min="0" 
+                                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                                               placeholder="Prix total proposé">
+                                    </div>
+
+                                    <div>
+                                        <label for="pickup_location_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Lieu de récupération</label>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-medium text-gray-600">{{ $announcement->pickup_city }} :</span>
+                                            <input type="text" name="pickup_location" id="pickup_location_{{ $announcement->id }}" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                                                   placeholder="Quartier, rue, point de repère...">
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label for="delivery_location_{{ $announcement->id }}" class="block text-sm font-medium text-gray-700 mb-1">Lieu de livraison</label>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-sm font-medium text-gray-600">{{ $announcement->delivery_city }} :</span>
+                                            <input type="text" name="delivery_location" id="delivery_location_{{ $announcement->id }}" 
+                                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                                                   placeholder="Quartier, rue, point de repère...">
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="flex space-x-3 pt-4">
+                                        <button type="button" @click="showRequestModal = false"
+                                                class="flex-1 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                                            Annuler
+                                        </button>
+                                        <button type="submit"
+                                                class="flex-1 px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
+                                            Envoyer la demande
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

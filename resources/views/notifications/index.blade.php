@@ -1,245 +1,265 @@
 @extends('layouts.app')
 
+@section('title', 'Notifications - CarryWay')
+
 @section('content')
-<div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="bg-white shadow-sm border-b border-gray-200 mb-6">
-        <div class="px-6 py-4">
-            <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
-                <div>
-                    <h1 class="text-2xl lg:text-3xl font-bold text-gray-900">Notifications</h1>
-                    <p class="text-gray-600 text-sm lg:text-base">Gérez vos notifications et alertes</p>
-                </div>
-                <div class="flex space-x-3">
-                    <button class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Marquer tout comme lu
-                    </button>
-                    <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Paramètres
-                    </button>
+<div class="min-h-full bg-gray-50">
+    <!-- Dashboard Header -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="py-8">
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center space-y-4 lg:space-y-0">
+                    <div>
+                        <h1 class="text-3xl lg:text-4xl font-bold text-gray-900">Notifications</h1>
+                        <p class="text-gray-600 text-base lg:text-lg mt-2">Restez informé de toutes les activités importantes</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <button type="button" onclick="markAllAsRead()" 
+                                class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Tout marquer comme lu
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Success/Error Messages -->
-    @if(session('success'))
-        <div class="mb-6 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('success') }}</span>
-        </div>
-    @endif
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        @if($notifications->count() > 0)
+            <div class="space-y-4">
+                @foreach($notifications as $notification)
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 {{ $notification->is_read ? 'opacity-75' : '' }}">
+                        <div class="p-6">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <!-- Notification Header -->
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        @if($notification->type === 'request_accepted')
+                                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                </svg>
+                                            </div>
+                                        @elseif($notification->type === 'meeting_verified')
+                                            <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                </svg>
+                                            </div>
+                                        @elseif($notification->type === 'delivery_verified')
+                                            <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                                </svg>
+                                            </div>
+                                        @else
+                                            <div class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                                                <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                </svg>
+                                            </div>
+                                        @endif
+                                        
+                                        <div class="flex-1">
+                                            <p class="text-gray-900 font-medium">{{ $notification->content }}</p>
+                                            <p class="text-sm text-gray-500">{{ $notification->created_at->diffForHumans() }}</p>
+                                        </div>
+                                        
+                                        @if(!$notification->is_read)
+                                            <div class="w-3 h-3 bg-blue-600 rounded-full"></div>
+                                        @endif
+                                    </div>
 
-    @if(session('error'))
-        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded relative" role="alert">
-            <span class="block sm:inline">{{ session('error') }}</span>
-        </div>
-    @endif
+                                    <!-- Verification Codes Display (for request_accepted notifications) -->
+                                    @if($notification->type === 'request_accepted' && $notification->data)
+                                        <div class="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                            <h4 class="text-sm font-semibold text-blue-900 mb-3">Codes de vérification</h4>
+                                            
+                                            <!-- User Information Only -->
+                                            @if($notification->request)
+                                                <div class="mb-4 p-3 bg-white rounded-lg border border-blue-200">
+                                                    <h6 class="text-xs font-semibold text-blue-800 mb-2">Utilisateur concerné</h6>
+                                                    <div class="flex items-center space-x-2">
+                                                        <div class="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center">
+                                                            <svg class="w-3 h-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <span class="text-xs text-blue-800">
+                                                            @if($notification->request->initiator_user_id === auth()->id())
+                                                                {{ $notification->request->announcementOwner->name ?? 'Utilisateur inconnu' }}
+                                                            @else
+                                                                {{ $notification->request->initiator->name ?? 'Utilisateur inconnu' }}
+                                                            @endif
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div class="flex items-center space-x-3">
+                                                    <div class="w-8 h-8 bg-blue-200 rounded-lg flex items-center justify-center">
+                                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                                        </svg>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs text-blue-600 font-medium">Code de rencontre</p>
+                                                        <p class="text-lg font-bold text-blue-900 font-mono">{{ $notification->data['meeting_code'] ?? 'N/A' }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                @if(isset($notification->data['delivery_code']))
+                                                    <div class="flex items-center space-x-3">
+                                                        <div class="w-8 h-8 bg-green-200 rounded-lg flex items-center justify-center">
+                                                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                                            </svg>
+                                                        </div>
+                                                        <div>
+                                                            <p class="text-xs text-green-600 font-medium">Code de livraison</p>
+                                                            <p class="text-lg font-bold text-green-900 font-mono">{{ $notification->data['delivery_code'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                            </div>
+                                            
+                                            <div class="mt-3 text-xs text-blue-700">
+                                                <p><strong>Code de rencontre :</strong> À montrer lors de la rencontre avec l'autre utilisateur</p>
+                                                @if(isset($notification->data['delivery_code']))
+                                                    <p><strong>Code de livraison :</strong> À montrer après la livraison réussie</p>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    @endif
 
-    <!-- Filter Section -->
-    <div class="bg-white shadow rounded-lg mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Filtrer les notifications</h3>
-        </div>
-        <div class="p-6">
-            <form method="GET" action="{{ route('notifications.index') }}" class="space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-                        <select name="type" id="type" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Tous les types</option>
-                            <option value="announcement" {{ request('type') == 'announcement' ? 'selected' : '' }}>Annonces</option>
-                            <option value="message" {{ request('type') == 'message' ? 'selected' : '' }}>Messages</option>
-                            <option value="request" {{ request('type') == 'request' ? 'selected' : '' }}>Demandes</option>
-                            <option value="system" {{ request('type') == 'system' ? 'selected' : '' }}>Système</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                        <select name="status" id="status" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <option value="">Tous les statuts</option>
-                            <option value="unread" {{ request('status') == 'unread' ? 'selected' : '' }}>Non lues</option>
-                            <option value="read" {{ request('status') == 'read' ? 'selected' : '' }}>Lues</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="sort" class="block text-sm font-medium text-gray-700 mb-1">Trier par</label>
-                        <select name="sort" id="sort" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <option value="latest" {{ request('sort') == 'latest' ? 'selected' : '' }}>Plus récentes</option>
-                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Plus anciennes</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        Filtrer
-                    </button>
-                    @if(request('type') || request('status') || request('sort'))
-                        <a href="{{ route('notifications.index') }}" class="text-sm text-gray-500 hover:text-gray-700">
-                            Effacer les filtres
-                        </a>
-                    @endif
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Notifications List -->
-    <div class="bg-white shadow rounded-lg">
-        <div class="px-6 py-4 border-b border-gray-200">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-medium text-gray-900">Notifications ({{ count($notifications ?? []) }})</h3>
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm text-gray-500">Afficher</span>
-                    <select class="text-sm border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option>10</option>
-                        <option>25</option>
-                        <option>50</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="divide-y divide-gray-200">
-            <!-- Sample Notifications -->
-            <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
-                <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">Nouvelle demande de voyage</p>
-                            <div class="flex items-center space-x-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Nouvelle
-                                </span>
-                                <span class="text-xs text-gray-500">Il y a 2 heures</span>
+                                    <!-- Action Buttons -->
+                                    <div class="flex items-center space-x-3 mt-4">
+                                        
+                                        @if($notification->request)
+                                            <a href="{{ route('requests.index', ['tab' => 'sent']) }}" 
+                                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Voir la demande
+                                            </a>
+                                        @endif
+                                        
+                                        @if(!$notification->is_read)
+                                            <button type="button" onclick="markAsRead('{{ $notification->id }}')"
+                                                    class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                                                Marquer comme lu
+                                            </button>
+                                        @endif
+                                        
+                                        <button type="button" onclick="deleteNotification('{{ $notification->id }}')"
+                                                class="inline-flex items-center px-4 py-2 border border-red-300 text-sm font-medium rounded-lg text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-1">Jean Dupont a demandé à rejoindre votre voyage vers Paris le 15 décembre.</p>
-                        <div class="mt-3 flex items-center space-x-3">
-                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Voir la demande</button>
-                            <button class="text-sm text-gray-500 hover:text-gray-700">Marquer comme lu</button>
-                        </div>
                     </div>
-                </div>
+                @endforeach
             </div>
 
-            <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
-                <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">Annonce approuvée</p>
-                            <div class="flex items-center space-x-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    Lu
-                                </span>
-                                <span class="text-xs text-gray-500">Il y a 1 jour</span>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Votre annonce "Colis pour Lyon" a été approuvée et est maintenant visible.</p>
-                        <div class="mt-3 flex items-center space-x-3">
-                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Voir l'annonce</button>
-                        </div>
-                    </div>
-                </div>
+            <!-- Pagination -->
+            <div class="mt-8">
+                {{ $notifications->links() }}
             </div>
-
-            <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
-                <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V4a1 1 0 00-1-1H5a1 1 0 00-1 1v1zm0 6h6V9H4v2zm0 4h6v-2H4v2z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">Nouveau message</p>
-                            <div class="flex items-center space-x-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                    Nouveau
-                                </span>
-                                <span class="text-xs text-gray-500">Il y a 3 jours</span>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Marie Martin vous a envoyé un message concernant votre annonce.</p>
-                        <div class="mt-3 flex items-center space-x-3">
-                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Répondre</button>
-                            <button class="text-sm text-gray-500 hover:text-gray-700">Marquer comme lu</button>
-                        </div>
-                    </div>
+        @else
+            <div class="text-center py-12">
+                <div class="mx-auto h-12 w-12 text-gray-400">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5zM4 19h6v-6H4v6zM4 5h6V4a1 1 0 00-1-1H5a1 1 0 00-1 1v1zm0 6h6V9H4v2zm0 4h6v-2H4v2z"></path>
+                    </svg>
                 </div>
+                <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune notification</h3>
+                <p class="mt-1 text-sm text-gray-500">
+                    Vous n'avez pas encore reçu de notifications.
+                </p>
             </div>
-
-            <div class="p-6 hover:bg-gray-50 transition-colors duration-150">
-                <div class="flex items-start space-x-3">
-                    <div class="flex-shrink-0">
-                        <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                            <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-medium text-gray-900">Maintenance prévue</p>
-                            <div class="flex items-center space-x-2">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                    Lu
-                                </span>
-                                <span class="text-xs text-gray-500">Il y a 1 semaine</span>
-                            </div>
-                        </div>
-                        <p class="text-sm text-gray-600 mt-1">Une maintenance est prévue le 20 décembre de 2h à 4h du matin. Le service sera temporairement indisponible.</p>
-                        <div class="mt-3 flex items-center space-x-3">
-                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Plus d'infos</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pagination -->
-        <div class="px-6 py-4 border-t border-gray-200">
-            <div class="flex items-center justify-between">
-                <div class="text-sm text-gray-700">
-                    Affichage de <span class="font-medium">1</span> à <span class="font-medium">4</span> sur <span class="font-medium">12</span> notifications
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button class="px-3 py-1 text-sm text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                        Précédent
-                    </button>
-                    <span class="px-3 py-1 text-sm text-gray-700 bg-blue-50 border border-blue-200 rounded-md">1</span>
-                    <button class="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">2</button>
-                    <button class="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">3</button>
-                    <button class="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50">
-                        Suivant
-                    </button>
-                </div>
-            </div>
-        </div>
+        @endif
     </div>
 </div>
+
+<script>
+    function markAsRead(notificationId) {
+        fetch('/notifications/mark-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                notification_id: notificationId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    }
+
+    function markAllAsRead() {
+        fetch('/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    }
+
+    function deleteNotification(notificationId) {
+        if (!confirm('Êtes-vous sûr de vouloir supprimer cette notification ?')) {
+            return;
+        }
+
+        fetch('/notifications', {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({
+                notification_id: notificationId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Une erreur est survenue');
+        });
+    }
+</script>
 @endsection

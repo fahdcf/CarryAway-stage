@@ -9,7 +9,14 @@
                     </svg>
                 </div>
                 <div>
-                    <h3 class="text-lg font-semibold text-gray-900">{{ $announcement->user->name }}</h3>
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        <!-- Debug: {{ $announcement->user->id }} -->
+                        <a href="{{ route('profiles.show', $announcement->user->id) }}" 
+                           class="inline-block px-2 py-1 rounded hover:text-blue-600 hover:bg-blue-50 transition-all duration-200 cursor-pointer border border-transparent hover:border-blue-200"
+                           onclick="console.log('Profile link clicked:', '{{ route('profiles.show', $announcement->user->id) }}')">
+                            {{ $announcement->user->name }}
+                        </a>
+                    </h3>
                     <p class="text-sm text-gray-500">{{ $announcement->created_at->diffForHumans() }}</p>
                 </div>
             </div>
