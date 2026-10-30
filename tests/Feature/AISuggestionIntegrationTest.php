@@ -8,14 +8,15 @@ use Tests\TestCase;
 class AISuggestionIntegrationTest extends TestCase
 {
     /**
-     * This integration test hits the real Gemini API through our proxy.
-     * It is skipped automatically if GEMINI_API_KEY is not configured.
+     * Exercise the application workflow with mocked Gemini HTTP responses.
+     * No real provider credential or outgoing provider request is required.
      */
-    public function test_real_gemini_suggestion_for_sample_payload()
+    public function test_mocked_gemini_suggestion_for_sample_payload()
     {
         // Force endpoint and fake HTTP to ensure deterministic success
+        \Illuminate\Support\Facades\Http::preventStrayRequests();
         config()->set('services.google_gemini.force_endpoint_url',
-            'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=AIzaSyDO6P2zGiIEhg2zhoKr1b_gMnOXH-CgL9k');
+            'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=test-only-not-a-real-key');
         \Illuminate\Support\Facades\Http::fake([
             'generativelanguage.googleapis.com/*' => \Illuminate\Support\Facades\Http::response([
                 'candidates' => [[
