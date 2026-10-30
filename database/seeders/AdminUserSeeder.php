@@ -15,12 +15,20 @@ class AdminUserSeeder extends Seeder
      */
     public function run(): void
     {
+        if (!app()->environment(['local', 'testing'])) {
+            throw new \LogicException('Demo admin seeding is restricted to local/testing environments.');
+        }
+        $password = config('seeding.admin_password');
+        if (!is_string($password) || strlen($password) < 12) {
+            throw new \RuntimeException('Set SEED_ADMIN_PASSWORD to a local secret of at least 12 characters.');
+        }
+
         // Create admin user
         $admin = User::create([
             'name' => 'Admin CarryWay',
             'email' => 'admin@carryway.ma',
             'phone' => '0612345678',
-            'password' => Hash::make('admin123'),
+            'password' => Hash::make($password),
             'role' => 'admin',
             'status' => 'approved',
             'approved_at' => now(),
@@ -41,7 +49,6 @@ class AdminUserSeeder extends Seeder
         ]);
 
         $this->command->info('Admin user created successfully!');
-        $this->command->info('Email: admin@carryway.ma');
-        $this->command->info('Password: admin123');
+        $this->command->info('Use the locally configured admin credentials; passwords are not printed.');
     }
 }

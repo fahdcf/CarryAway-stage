@@ -17,12 +17,20 @@ class CarryWaySeeder extends Seeder
      */
     public function run(): void
     {
+        if (!app()->environment(['local', 'testing'])) {
+            throw new \LogicException('Demo user seeding is restricted to local/testing environments.');
+        }
+        $password = config('seeding.demo_password');
+        if (!is_string($password) || strlen($password) < 12) {
+            throw new \RuntimeException('Set SEED_DEMO_PASSWORD to a local secret of at least 12 characters.');
+        }
+
         // Create some test users
         $user1 = User::create([
             'name' => 'Ahmed Benali',
             'email' => 'ahmed@example.com',
             'phone' => '0612345678',
-            'password' => bcrypt('password'),
+            'password' => bcrypt($password),
             'role' => 'user',
             'status' => 'active',
             'approved_at' => now(),
@@ -32,7 +40,7 @@ class CarryWaySeeder extends Seeder
             'name' => 'Fatima Zahra',
             'email' => 'fatima@example.com',
             'phone' => '0623456789',
-            'password' => bcrypt('password'),
+            'password' => bcrypt($password),
             'role' => 'user',
             'status' => 'active',
             'approved_at' => now(),
@@ -42,7 +50,7 @@ class CarryWaySeeder extends Seeder
             'name' => 'Mohammed Alami',
             'email' => 'mohammed@example.com',
             'phone' => '0634567890',
-            'password' => bcrypt('password'),
+            'password' => bcrypt($password),
             'role' => 'user',
             'status' => 'active',
             'approved_at' => now(),
@@ -127,7 +135,6 @@ class CarryWaySeeder extends Seeder
         ]);
 
         $this->command->info('Test data created successfully!');
-        $this->command->info('Users: ahmed@example.com, fatima@example.com, mohammed@example.com');
-        $this->command->info('Password: password');
+        $this->command->info('Demo accounts use your local SEED_DEMO_PASSWORD; passwords are not printed.');
     }
 }
